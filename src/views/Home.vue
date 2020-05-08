@@ -1,6 +1,7 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
+    <textarea v-model="text" cols="30" rows="10"></textarea>
+    <button v-on:click="evaluateText">Check</button>
   </div>
 </template>
 
@@ -13,12 +14,16 @@ import {
 export default {
   name: "Home",
   components: {},
-  async created() {
-    const predictor = new SentimentPredictor();
-    await predictor.init(HOSTED_URLS);
-    const text = "this is a great movie";
-    const result = predictor.predict(text);
-    console.log(result);
+  data() {
+    return {
+      text: ""
+    };
+  },
+  async created() {},
+  methods: {
+    evaluateText() {
+      console.log(this.$tsSentiment.predict(this.text));
+    }
   }
 };
 </script>
