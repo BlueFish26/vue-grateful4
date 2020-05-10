@@ -1,29 +1,20 @@
-import * as tf from '@tensorflow/tfjs';
-import { OOV_INDEX, padSequences } from './sequence_utils';
+const tf = require('@tensorflow/tfjs-node');
+const { OOV_INDEX, padSequences } = require('./sequence_utils');
+const axios = require('axios').default;
+const { performance } = require('perf_hooks');
 
-export const HOSTED_URLS = {
-  model:
-    'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/model.json',
-  metadata:
-    'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json',
-};
-
-export const LOCAL_URLS = {
-  model: './resources/model.json',
-  metadata: './resources/metadata.json',
-};
-
-export class SentimentPredictor {
+class SentimentPredictor {
   async init(urls) {
-    console.log('init');
+    console.log('init', urls);
     this.urls = urls;
     this.model = await this.loadHostedPreTrainedModel(urls.model);
     await this.loadMetadata();
-    console.log('model loaded');
+    console.log('models loaded');
   }
 
   async loadHostedPreTrainedModel(url) {
     try {
+      console.log('Loading Models', url);
       const model = await tf.loadLayersModel(url);
       return model;
     } catch (err) {
@@ -33,19 +24,21 @@ export class SentimentPredictor {
 
   async loadMetadata() {
     try {
-      const metadataJson = await fetch(this.urls.metadata);
-      const metadata = await metadataJson.json();
-
-      this.indexFrom = metadata['index_from'];
-      this.maxLen = metadata['max_len'];
-      this.wordIndex = metadata['word_index'];
-      this.vocabularySize = metadata['vocabulary_size'];
+      console.log('Loading Metadata', this.urls.metadata);
+      const response = await axios.get(this.urls.metadata);
+      //const metadata = await metadataJson.json();
+      const metadata = response.data;
+      this.indexFrom = metadata.index_from;
+      this.maxLen = metadata.max_len;
+      this.wordIndex = metadata.word_index;
+      this.vocabularySize = metadata.vocabulary_size;
     } catch (err) {
       console.error(err);
     }
   }
 
   predict(text) {
+    console.log(text);
     // Convert to lower case and remove all punctuations.
     const inputText = text
       .trim()
@@ -65,7 +58,6 @@ export class SentimentPredictor {
     const paddedSequence = padSequences([sequence], this.maxLen);
     console.log(paddedSequence);
     const input = tf.tensor2d(paddedSequence, [1, this.maxLen]);
-
     const beginMs = performance.now();
     const predictOut = this.model.predict(input);
     const score = predictOut.dataSync()[0];
@@ -75,3 +67,4 @@ export class SentimentPredictor {
     return { score: score, elapsed: endMs - beginMs };
   }
 }
+module.exports = SentimentPredictor;
