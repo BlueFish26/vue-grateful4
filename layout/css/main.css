@@ -5,6 +5,7 @@
   --primary: #f05632;
   --yellow: #f5be2e;
   --light-yellow: #ffdb99;
+  --light-gray: #a6abab;
 }
 
 *,
@@ -22,55 +23,23 @@ html {
 body {
   font-family: 'Roboto Slab', serif;
 }
-
-.container {
-  width: 100%;
-  height: 100vh;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-}
 /* to prevent images to be bigger than thier container */
 img {
   width: 100%;
   max-width: 100%;
   height: 100%;
 }
-.container .image {
-  background: url('../images/dog-2074921_1280.jpg') center no-repeat;
-  background-size: cover;
-  display: none;
+a {
+  text-decoration: none;
 }
-.login-section {
-  padding: 1.5rem;
-  margin: 2rem auto;
-  max-width: 500px;
-}
-.login-section .brand {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 1.5rem auto;
-}
-.login-section .brand h1 {
-  font-family: 'Leckerli One', cursive;
-  font-size: 3rem;
-}
-
-.login-section h2 {
-  font-size: 2.5rem;
-}
-
-.login-section p {
-  font-size: 1.5rem;
-}
-
-.input-group {
+.input-group,
+.input-group-file-upload {
   display: grid;
   position: relative;
   grid-template-columns: 7% 93%;
   margin: 25px 0;
   padding: 5px 0;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 1px solid var(--light-yellow);
 }
 .input-group::after,
 .input-group::before {
@@ -114,7 +83,7 @@ img {
 
 .icon i {
   font-size: 2rem;
-  color: #d9d9d9;
+  color: var(--light-yellow);
   transition: 0.3s;
 }
 .input-group > div {
@@ -122,13 +91,14 @@ img {
   height: 45px;
 }
 
-.input-group > div h5 {
+.input-group > div h5,
+.input-group-file-upload div > h5 {
   position: absolute;
   left: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: #999;
-  font-size: 18px;
+  color: var(--light-gray);
+  font-size: 1.6rem;
   /* display: none; */
   transition: 0.3s;
 }
@@ -143,19 +113,19 @@ img {
   outline: none;
   background: none;
   padding: 0.5rem 0.7rem;
-  font-size: 1.2rem;
+  font-size: 2rem;
   color: #555;
 }
-a {
-  display: block;
-  text-align: right;
-  text-decoration: none;
-  color: #999;
-  font-size: 1.2rem;
-  transition: 0.3s;
+.input-group-file-upload {
+  width: 100%;
 }
-a:hover {
-  color: var(--primary);
+.input-group-file-upload div > h5 {
+  top: 25%;
+}
+.file-upload {
+  padding-top: 2rem;
+  padding-left: 1rem;
+  font-size: 1.5rem;
 }
 .btn {
   display: block;
@@ -165,12 +135,7 @@ a:hover {
   margin: 1rem 0;
   font-size: 1.5rem;
   border: none;
-  background-image: linear-gradient(
-    to right,
-    var(--light-yellow),
-    var(--yellow),
-    var(--light-yellow)
-  );
+
   cursor: pointer;
   color: #fff;
   text-transform: uppercase;
@@ -182,19 +147,19 @@ a:hover {
 .btn:hover {
   background-position: right;
 }
-
-@media screen and (min-width: 768px) {
-  .container .image {
-    display: block;
-    background-position-y: 20%;
-  }
+.btn.primary {
+  background-image: linear-gradient(
+    to right,
+    var(--primary),
+    var(--yellow),
+    var(--primary)
+  );
 }
-
-@media screen and (min-width: 1000px) {
-  .container {
-    width: 100%;
-    height: 100vh;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
+.btn.secondary {
+  background-image: linear-gradient(
+    to right,
+    var(--light-yellow),
+    var(--yellow),
+    var(--light-yellow)
+  );
 }
