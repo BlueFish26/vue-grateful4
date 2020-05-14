@@ -24,6 +24,9 @@
 .header .nav-buttons ul li {
   display: inline;
 }
+.header .nav-buttons ul li a {
+  display: inline;
+}
 .header .nav-button {
   font-size: 1.3rem;
   margin-right: 0.5rem;
@@ -55,7 +58,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: contain;
   margin: 1rem auto;
 }
 
@@ -128,18 +131,80 @@
   justify-content: space-evenly;
   margin-bottom: 1rem;
 }
-.post-categories .video i {
-  font-size: 5rem;
+.post-categories .category {
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.post-categories .category.active {
+  position: relative;
+}
+.post-categories .category.active::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  bottom: 2px;
+  background-color: var(--blue);
+  top: 35px;
+  left: 0;
+}
+.post-categories .category i {
+  font-size: 3rem;
 }
 .posts {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: column;
 }
 .posts .post {
-  margin: 0.2rem;
   cursor: pointer;
+  padding: 1rem;
+  margin: 1rem;
+  background-color: #fbfbfb;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.125);
 }
 .posts .post img {
   align-self: center;
   object-fit: cover;
+  max-height: 300px;
+  min-height: 300px;
+  border-radius: 0.5rem;
+}
+.posts .post .post-metadata {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: center;
+  margin: 0.5rem auto;
+}
+.posts .post .post-metadata div {
+  margin-right: 2rem;
+  font-size: 1.5rem;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+.posts .post .post-metadata i {
+  font-size: 2rem;
+  margin-right: 0.5rem;
+}
+.posts .post .comment {
+  font-size: 1.3rem;
+}
+
+@media screen and (min-width: 700px) {
+  .posts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  .posts {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }

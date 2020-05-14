@@ -6,6 +6,8 @@
   --yellow: #f5be2e;
   --light-yellow: #ffdb99;
   --light-gray: #a6abab;
+  --blue: #025373;
+  --light-green: #66cdd9;
 }
 
 *,
@@ -162,4 +164,14 @@ a {
     var(--yellow),
     var(--light-yellow)
   );
+}
+a {
+  display: block;
+  text-align: right;
+  color: #999;
+  font-size: 1.2rem;
+  transition: 0.3s;
+}
+a:hover {
+  color: var(--primary);
 }
