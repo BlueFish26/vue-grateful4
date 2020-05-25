@@ -13,7 +13,9 @@ app.use(express.json({ extended: false }));
 app.use(cors());
 
 const commentRoutes = require('./routes/api/posts');
+const userRoutes = require('./routes/api/users');
 app.use('/api/posts', commentRoutes);
+app.use('/api/users', userRoutes);
 
 //handle production settings
 if (process.env.NODE_ENV === 'production') {
