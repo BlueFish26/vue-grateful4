@@ -12,6 +12,9 @@
   justify-content: space-between;
   align-items: center;
   margin: 0.5rem 1rem;
+  background: #eee;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 }
 .header .brand h3 {
   font-family: 'Leckerli One', cursive;
@@ -154,11 +157,11 @@
 .post-categories .category i {
   font-size: 3rem;
 }
-.posts {
+.post-section {
   display: flex;
   flex-direction: column;
 }
-.posts .post {
+.post-section .post {
   cursor: pointer;
   padding: 1rem;
   margin: 1rem;
@@ -166,44 +169,44 @@
   border-radius: 0.5rem;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.125);
 }
-.posts .post img {
+.post-section .post img {
   align-self: center;
   object-fit: cover;
   max-height: 300px;
   min-height: 300px;
   border-radius: 0.5rem;
 }
-.posts .post .post-metadata {
+.post-section .post .post-metadata {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-content: center;
   margin: 0.5rem auto;
 }
-.posts .post .post-metadata div {
+.post-section .post .post-metadata div {
   margin-right: 2rem;
   font-size: 1.5rem;
   display: flex;
   align-content: center;
   justify-content: center;
 }
-.posts .post .post-metadata i {
+.post-section .post .post-metadata i {
   font-size: 2rem;
   margin-right: 0.5rem;
 }
-.posts .post .comment {
+.post-section .post .comment {
   font-size: 1.3rem;
 }
 
 @media screen and (min-width: 700px) {
-  .posts {
+  .post-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
 }
 
 @media screen and (min-width: 1100px) {
-  .posts {
+  .post-section {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
   }

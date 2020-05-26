@@ -97,8 +97,8 @@ router.get('/app/:app_name', [checkJwt], async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const result = global.predictor.predict('great');
-    console.log(result.score);
+    //const result = global.predictor.predict('great');
+    //console.log(result.score);
     const post = await Post.findById(req.params.id).select('-comments');
     return res.json(post);
   } catch (err) {
