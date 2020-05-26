@@ -56,7 +56,8 @@
 <script>
 import { onFocus, onBlur } from "../ui-utils/inputs";
 import { redirectTo } from "../ui-utils/routing";
-import axios from "axios";
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   name: "Signup",
   components: {},
@@ -71,7 +72,11 @@ export default {
       password: ""
     };
   },
+  computed: {
+    ...mapGetters(["auth"])
+  },
   methods: {
+    ...mapActions(["registerUser", "loadUser"]),
     onFocus,
     onBlur,
     redirectTo,
@@ -84,10 +89,14 @@ export default {
         app_name: "grateful4"
       };
       try {
-        const token = await axios.post("/api/users", newUser);
+        await this.registerUser(newUser);
+        await this.loadUser(this.auth.token);
+        console.log(this.auth.token, this.auth.user);
       } catch (err) {
-        console.log(err.response);
-        this.error = err.response.data.errors[0].msg;
+        console.log(err);
+        if (err.response) {
+          this.error = err.response.data.errors[0].msg;
+        }
       }
     }
   }
