@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="sign-up-container">
     <div class="signup-section">
       <form @submit="registerNewUser">
         <h1>Create Account</h1>
@@ -44,6 +44,9 @@
           </div>
         </div>
         <input type="submit" class="btn secondary" value="Register" />
+        <div class="error">
+          <p v-if="error.length" class="error">{{error}}</p>
+        </div>
       </form>
     </div>
     <div class="image"></div>
@@ -62,6 +65,7 @@ export default {
   },
   data() {
     return {
+      error: "",
       name: "",
       email: "",
       password: ""
@@ -71,14 +75,20 @@ export default {
     onFocus,
     onBlur,
     redirectTo,
-    registerNewUser(event) {
+    async registerNewUser(event) {
       event.preventDefault();
       let newUser = {
         name: this.name,
         email: this.email,
-        password: this.password
+        password: this.password,
+        app_name: "grateful4"
       };
-      console.log(newUser);
+      try {
+        const token = await axios.post("/api/users", newUser);
+      } catch (err) {
+        console.log(err.response);
+        this.error = err.response.data.errors[0].msg;
+      }
     }
   }
 };

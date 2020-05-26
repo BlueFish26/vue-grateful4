@@ -1,10 +1,10 @@
-.container {
+.sign-up-container {
   width: 100%;
   height: 100vh;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
 }
-.container .image {
+.sign-up-container .image {
   background: url('../images/cat-2536662_1920.jpg') center no-repeat;
   background-size: cover;
   display: none;
@@ -23,16 +23,15 @@
 .signup-section form p {
   font-size: 1.3rem;
 }
-
 @media screen and (min-width: 768px) {
-  .container .image {
+  .sign-up-container .image {
     display: block;
     background-position-y: 20%;
   }
 }
 
 @media screen and (min-width: 1000px) {
-  .container {
+  .sign-up-container {
     width: 100%;
     height: 100vh;
     display: grid;
