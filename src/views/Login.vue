@@ -35,33 +35,31 @@
         </div>
         <a href="#">Forgot Password?</a>
         <input type="submit" class="btn primary" value="Login" onclick="redirect('user-home.html')" />
-        <input type="submit" class="btn secondary" value="Signup" onclick="redirect('signup.html')" />
+        <input
+          type="submit"
+          class="btn secondary"
+          value="Signup"
+          v-on:click="redirectTo('/signup')"
+        />
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import { onFocus, onBlur } from "../ui-utils/inputs";
+import { redirectTo } from "../ui-utils/routing";
 export default {
   name: "Login",
   components: {},
   methods: {
-    onFocus: function(event) {
-      let parentElement = event.target.parentNode.parentNode;
-      parentElement.classList.add("active");
-    },
-
-    onBlur: function(event) {
-      let parent = event.target.parentNode.parentNode;
-      if (event.target.value === "") {
-        parent.classList.remove("active");
-      }
-    }
+    onFocus,
+    onBlur,
+    redirectTo
   }
 };
 </script>
 
-<style>
-@import "../assets/css/main.css";
+<style scoped>
 @import "../assets/css/index.css";
 </style>
