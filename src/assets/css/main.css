@@ -144,6 +144,7 @@ a {
   font-family: 'Roboto Slab', sans-serif;
   background-size: 200%;
   transition: 0.5s;
+  outline: none;
 }
 
 .btn:hover {
@@ -179,4 +180,7 @@ a:hover {
 .error {
   color: red;
   font-size: 1.5rem;
+}
+.error ul {
+  list-style: none;
 }

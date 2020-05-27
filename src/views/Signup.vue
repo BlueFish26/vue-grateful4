@@ -1,16 +1,23 @@
 <template>
   <div class="sign-up-container">
     <div class="signup-section">
-      <form @submit="registerNewUser">
+      <form @submit.prevent="registerNewUser" autocomplete="off" novalidate>
         <h1>Create Account</h1>
         <p>
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam,
-          ab!
+          ab!s
         </p>
         <div class="input-group">
           <div>
             <h5>Username</h5>
-            <input type="text" class="input" v-on:focus="onFocus" v-on:blur="onBlur" v-model="name" />
+            <input
+              type="text"
+              class="input"
+              v-on:focus="onFocus"
+              v-on:blur="onBlur"
+              v-model="name"
+              required
+            />
           </div>
         </div>
         <div class="input-group">
@@ -22,6 +29,7 @@
               v-on:focus="onFocus"
               v-on:blur="onBlur"
               v-model="email"
+              required
             />
           </div>
         </div>
@@ -34,6 +42,7 @@
               v-on:focus="onFocus"
               v-on:blur="onBlur"
               v-model="password"
+              required
             />
           </div>
         </div>
@@ -44,8 +53,10 @@
           </div>
         </div>
         <input type="submit" class="btn secondary" value="Register" />
-        <div class="error">
-          <p v-if="error.length" class="error">{{error}}</p>
+        <div class="error" v-if="errors.length">
+          <ul>
+            <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
+          </ul>
         </div>
       </form>
     </div>
@@ -66,7 +77,8 @@ export default {
   },
   data() {
     return {
-      error: "",
+      errors: [],
+      isFormValid: false,
       name: "",
       email: "",
       password: ""
@@ -80,8 +92,12 @@ export default {
     onFocus,
     onBlur,
     redirectTo,
-    async registerNewUser(event) {
+    registerNewUser: async function(event) {
       event.preventDefault();
+      this.checkForm();
+      if (!this.isFormValid) {
+        return;
+      }
       let newUser = {
         name: this.name,
         email: this.email,
@@ -91,13 +107,36 @@ export default {
       try {
         await this.registerUser(newUser);
         await this.loadUser(this.auth.token);
-        console.log(this.auth.token, this.auth.user);
+        //console.log(this.auth.token, this.auth.user);
+        this.redirectTo("/");
       } catch (err) {
-        console.log(err);
+        //console.log(err);
         if (err.response) {
-          this.error = err.response.data.errors[0].msg;
+          this.errors.push(err.response.data.errors[0].msg);
+        } else {
+          console.log(err);
         }
       }
+    },
+    validEmail: function(email) {
+      let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
+    },
+    checkForm: function() {
+      this.errors = [];
+      let isNameValid = !!this.name;
+      let isPasswordValid = !!this.password;
+      let isEmailValid = this.validEmail(this.email);
+      if (!isNameValid) {
+        this.errors.push("Please enter Username");
+      }
+      if (!isPasswordValid) {
+        this.errors.push("Please enter Password");
+      }
+      if (!isEmailValid) {
+        this.errors.push("Please enter valid Email Address");
+      }
+      this.isFormValid = isEmailValid && isNameValid && isPasswordValid;
     }
   }
 };

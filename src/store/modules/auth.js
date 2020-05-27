@@ -36,7 +36,10 @@ const actions = {
 const mutations = {
   setAuthenticated: (state, authenticated) =>
     (state.auth.isAuthenticated = authenticated),
-  setToken: (state, token) => (state.auth.token = token),
+  setToken: (state, token) => {
+    localStorage.setItem('token', token);
+    state.auth.token = token;
+  },
   setUser: (state, user) => (state.auth.user = user),
 };
 
