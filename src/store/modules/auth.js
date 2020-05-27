@@ -13,23 +13,31 @@ const getters = {
 };
 
 const actions = {
-  async registerUser({ commit }, newUser) {
+  registerUser: async function({ commit }, newUser) {
     try {
       const response = await axios.post('/api/users', newUser);
-      commit('setToken', response.data);
+      commit('setToken', response.data.token);
     } catch (err) {
       throw err;
     }
   },
-  async loadUser({ commit }, token) {
+  loadAuthenticatedUser: async function({ commit }, token) {
     try {
-      const response = await axios.get('/api/users', {
-        'x-auth-token': token,
+      const response = await axios.get('/api/auth', {
+        headers: { 'x-auth-token': token },
       });
+      console.log('User', response);
       commit('setUser', response.data);
     } catch (err) {
       throw err;
     }
+  },
+  authenticateUser: async function({ commit }, user) {
+    try {
+      const response = await axios.post('/api/auth', user);
+      commit('setAuthenticated', true);
+      commit('setToken', response.data.token);
+    } catch (err) {}
   },
 };
 

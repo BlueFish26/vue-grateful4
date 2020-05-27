@@ -67,6 +67,7 @@
 <script>
 import { onFocus, onBlur } from "../ui-utils/inputs";
 import { redirectTo } from "../ui-utils/routing";
+import { validEmail } from "../ui-utils/validate";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -88,10 +89,11 @@ export default {
     ...mapGetters(["auth"])
   },
   methods: {
-    ...mapActions(["registerUser", "loadUser"]),
+    ...mapActions(["registerUser"]),
     onFocus,
     onBlur,
     redirectTo,
+    validEmail,
     registerNewUser: async function(event) {
       event.preventDefault();
       this.checkForm();
@@ -106,7 +108,7 @@ export default {
       };
       try {
         await this.registerUser(newUser);
-        await this.loadUser(this.auth.token);
+        //await this.loadAuthenticatedUser(this.auth.token);
         //console.log(this.auth.token, this.auth.user);
         this.redirectTo("/");
       } catch (err) {
@@ -117,10 +119,6 @@ export default {
           console.log(err);
         }
       }
-    },
-    validEmail: function(email) {
-      let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(email);
     },
     checkForm: function() {
       this.errors = [];
