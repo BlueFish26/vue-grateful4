@@ -32,6 +32,12 @@ const actions = {
       throw err;
     }
   },
+  loadToken: function({ commit }, token) {
+    if (token) {
+      commit('setAuthenticated', true);
+      commit('setToken', token);
+    }
+  },
   authenticateUser: async function({ commit }, user) {
     try {
       const response = await axios.post('/api/auth', user);
@@ -50,13 +56,22 @@ const actions = {
       throw err;
     }
   },
+  logoutUser: function({ commit }) {
+    commit('setAuthenticated', false);
+    commit('setUser', null);
+    commit('setToken', null);
+  },
 };
 
 const mutations = {
   setAuthenticated: (state, authenticated) =>
     (state.auth.isAuthenticated = authenticated),
   setToken: (state, token) => {
-    localStorage.setItem('token', token);
+    if (token) {
+      localStorage.setItem('token', token);
+    } else {
+      localStorage.removeItem('token');
+    }
     state.auth.token = token;
   },
   setUser: (state, user) => (state.auth.user = user),

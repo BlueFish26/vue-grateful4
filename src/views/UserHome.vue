@@ -7,10 +7,15 @@
       <div class="nav-buttons">
         <ul>
           <li>
-            <a class="nav-button active" href="#">Log In</a>
+            <span
+              v-if="!auth.isAuthenticated"
+              class="nav-button active"
+              @click="redirectTo('/')"
+            >Log In</span>
+            <span v-if="auth.isAuthenticated" class="nav-button logout" @click="logout">Log out</span>
           </li>
-          <li>
-            <a class="nav-button" href="#">Sign Up</a>
+          <li v-if="!auth.isAuthenticated">
+            <span class="nav-button">Sign Up</span>
           </li>
         </ul>
       </div>
@@ -203,16 +208,18 @@ export default {
     console.log("Created");
     let handle = this.$route.params.handle;
     console.log("params", this.$route.params);
-
+    const token = localStorage.getItem("token");
     if (handle) {
       await this.loadRequestedUser(handle);
     } else {
-      const token = localStorage.getItem("token");
       if (token) {
         await this.loadAuthenticatedUser(token);
       } else {
         this.redirectTo("/");
       }
+    }
+    if (token) {
+      this.loadToken(token);
     }
 
     if (this.auth.user) {
@@ -230,8 +237,19 @@ export default {
     ...mapGetters(["auth"])
   },
   methods: {
-    ...mapActions(["loadAuthenticatedUser", "loadRequestedUser"]),
-    redirectTo
+    ...mapActions([
+      "loadAuthenticatedUser",
+      "loadRequestedUser",
+      "loadToken",
+      "logoutUser"
+    ]),
+    redirectTo,
+    logout: function() {
+      if (this.auth.isAuthenticated) {
+        this.logoutUser();
+        this.redirectTo("/");
+      }
+    }
   }
 };
 </script>

@@ -34,9 +34,16 @@
   font-size: 1.3rem;
   margin-right: 0.5rem;
   color: #000;
+  cursor: pointer;
 }
 .header .nav-button.active {
-  background-color: var(--primary);
+  background-color: var(--blue);
+  padding: 0.4rem;
+  border-radius: 0.2rem;
+  color: #fff;
+}
+.header .nav-button.logout {
+  background-color: var(--light-gray);
   padding: 0.4rem;
   border-radius: 0.2rem;
   color: #fff;
