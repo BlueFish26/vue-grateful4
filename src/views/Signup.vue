@@ -3,13 +3,23 @@
     <div class="signup-section">
       <form @submit.prevent="registerNewUser" autocomplete="off" novalidate>
         <h1>Create Account</h1>
-        <p>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aperiam,
-          ab!s
-        </p>
+        <p>Please enter your details below:</p>
         <div class="input-group">
           <div>
-            <h5>Username</h5>
+            <h5>Handle</h5>
+            <input
+              type="text"
+              class="input"
+              v-on:focus="onFocus"
+              v-on:blur="onBlur"
+              v-model="handle"
+              required
+            />
+          </div>
+        </div>
+        <div class="input-group">
+          <div>
+            <h5>Full Name</h5>
             <input
               type="text"
               class="input"
@@ -42,6 +52,19 @@
               v-on:focus="onFocus"
               v-on:blur="onBlur"
               v-model="password"
+              required
+            />
+          </div>
+        </div>
+        <div class="input-group textarea-group">
+          <div>
+            <h5>Motto</h5>
+            <textarea
+              type="password"
+              class="textarea"
+              v-on:focus="onFocus"
+              v-on:blur="onBlur"
+              v-model="motto"
               required
             />
           </div>
@@ -82,7 +105,9 @@ export default {
       isFormValid: false,
       name: "",
       email: "",
-      password: ""
+      password: "",
+      handle: "",
+      motto: ""
     };
   },
   computed: {
@@ -104,7 +129,9 @@ export default {
         name: this.name,
         email: this.email,
         password: this.password,
-        app_name: "grateful4"
+        app_name: "grateful4",
+        handle: `@${this.handle}`,
+        motto: this.motto
       };
       try {
         await this.registerUser(newUser);

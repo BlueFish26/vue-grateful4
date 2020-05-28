@@ -19,7 +19,7 @@ const routes = [
     component: Signup,
   },
   {
-    path: '/UserHome',
+    path: '/:handle',
     name: 'UserHome',
     component: UserHome,
   },

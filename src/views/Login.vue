@@ -67,7 +67,15 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Login",
   components: {},
-  created() {},
+  created: async function() {
+    console.log("Created");
+    const token = localStorage.getItem("token");
+    if (!this.auth.isAuthenticated && !!token) {
+      await this.loadAuthenticatedUser(token);
+      let handle = this.auth.user.handle.replace("@", "");
+      this.redirectTo(`/${handle}`);
+    }
+  },
   data() {
     return {
       isFormValid: false,
@@ -100,7 +108,8 @@ export default {
         console.log(token);
         await this.loadAuthenticatedUser(token);
         console.log(this.auth);
-        this.redirectTo("/UserHome");
+        let handle = this.auth.user.handle.replace("@", "");
+        this.redirectTo(`/${handle}`);
       } catch (err) {
         console.log(err);
         this.errors.push(err);

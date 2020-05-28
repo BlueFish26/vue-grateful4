@@ -3,7 +3,7 @@ import axios from 'axios';
 const state = {
   auth: {
     isAuthenticated: false,
-    token: '',
+    token: localStorage.getItem('token'),
     user: {},
   },
 };
@@ -26,7 +26,7 @@ const actions = {
       const response = await axios.get('/api/auth', {
         headers: { 'x-auth-token': token },
       });
-      console.log('User', response);
+      commit('setAuthenticated', true);
       commit('setUser', response.data);
     } catch (err) {
       throw err;
@@ -37,7 +37,18 @@ const actions = {
       const response = await axios.post('/api/auth', user);
       commit('setAuthenticated', true);
       commit('setToken', response.data.token);
-    } catch (err) {}
+    } catch (err) {
+      throw err;
+    }
+  },
+  loadRequestedUser: async function({ commit }, handle) {
+    try {
+      const response = await axios.get(`/api/users/@${handle}`);
+      console.log(`/api/users/@${handle}`, response);
+      commit('setUser', response.data);
+    } catch (err) {
+      throw err;
+    }
   },
 };
 

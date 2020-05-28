@@ -118,6 +118,22 @@ a {
   font-size: 2rem;
   color: #555;
 }
+.textarea-group {
+  height: 100px;
+}
+.textarea {
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  top: 0;
+  left: 0;
+  border: none;
+  outline: none;
+  background: none;
+  padding: 0.5rem 0.7rem;
+  font-size: 2rem;
+  color: #555;
+}
 .input-group-file-upload {
   width: 100%;
 }

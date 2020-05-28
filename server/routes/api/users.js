@@ -8,10 +8,10 @@ const { check, validationResult } = require('express-validator');
 
 const User = require('../../models/User');
 
-router.get('/', (req, res) => {
-  res.json('test');
-});
-
+/*
+Route  -  POST /api/users
+Desc   - Register new user
+*/
 router.post(
   '/',
   [
@@ -23,6 +23,13 @@ router.post(
       .not()
       .isEmpty()
       .withMessage('name is required'),
+    check('handle')
+      .not()
+      .isEmpty()
+      .withMessage('handle is required'),
+    check('motto')
+      .isLength({ min: 2, max: 500 })
+      .withMessage('motto is required (up to 500 characters)'),
     check('email')
       .isEmail()
       .withMessage('email is required'),
@@ -35,7 +42,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { app_name, name, email, password } = req.body;
+    const { app_name, name, email, password, handle, motto } = req.body;
     try {
       let user = await User.findOne({ email: email });
       if (user) {
@@ -51,6 +58,8 @@ router.post(
         email: email,
         avatar: avatar,
         password: password,
+        handle: handle,
+        motto: motto,
       });
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
@@ -77,5 +86,22 @@ router.post(
     }
   }
 );
+
+/*
+Route  - GET (Public) /api/users/:handle
+Desc   - Fetch basic user details for display
+*/
+router.get('/:handle', async (req, res) => {
+  try {
+    let handle = req.params.handle;
+    console.log(handle);
+
+    let user = await User.findOne({ handle: handle });
+    return res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;

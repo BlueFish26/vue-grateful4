@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="user-home-container">
     <section class="header">
       <div class="brand">
         <h3>Grateful4</h3>
@@ -22,7 +22,7 @@
       <div class="follow-button">
         <div class="name">
           <span class="fullname">{{name}}</span>
-          <span class="handle">@bluefish</span>
+          <span class="handle">{{auth.user.handle}}</span>
         </div>
         <button>Follow</button>
       </div>
@@ -41,10 +41,7 @@
         </div>
       </div>
       <div class="user-notes">
-        <div class="message">
-          Let your smile change the world, but dont let the world change your
-          smile
-        </div>
+        <div class="message">{{auth.user.motto}}</div>
       </div>
     </section>
     <section class="post-categories">
@@ -204,10 +201,24 @@ export default {
   components: {},
   created: async function() {
     console.log("Created");
-    const token = localStorage.getItem("token");
-    if (!this.auth.isAuthenticated && !!token) {
-      await this.loadAuthenticatedUser(token);
+    let handle = this.$route.params.handle;
+    console.log("params", this.$route.params);
+
+    if (handle) {
+      await this.loadRequestedUser(handle);
+    } else {
+      const token = localStorage.getItem("token");
+      if (token) {
+        await this.loadAuthenticatedUser(token);
+      } else {
+        this.redirectTo("/");
+      }
+    }
+
+    if (this.auth.user) {
       this.name = this.auth.user.name;
+    } else {
+      this.redirectTo("/");
     }
   },
   data() {
@@ -219,7 +230,8 @@ export default {
     ...mapGetters(["auth"])
   },
   methods: {
-    ...mapActions(["loadAuthenticatedUser"])
+    ...mapActions(["loadAuthenticatedUser", "loadRequestedUser"]),
+    redirectTo
   }
 };
 </script>
