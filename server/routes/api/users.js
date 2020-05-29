@@ -5,8 +5,37 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 
 const { check, validationResult } = require('express-validator');
-
+const checkJwt = require('../../utils/checkJwt');
 const User = require('../../models/User');
+
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+cloudinary.config({
+  cloud_name: 'riverbytes',
+  api_key: '993676511158831',
+  api_secret: 'QF54SdhRiRomo1FElFd6kyDo6LE',
+});
+
+const profileImageStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    return {
+      folder: 'images',
+      format: 'png',
+      public_id: `avatar_${req.params.id}`,
+      eager: [
+        {
+          crop: 'pad',
+          width: 500,
+          height: 500,
+        },
+      ],
+    };
+  },
+});
+const profileImageUploader = multer({ storage: profileImageStorage });
 
 /*
 Route  -  POST /api/users
@@ -80,6 +109,33 @@ router.post(
           return res.json({ token });
         }
       );
+    } catch (err) {
+      console.error(err.message);
+      return res.status(500).send('Server Error');
+    }
+  }
+);
+
+/*
+Route  - PUT (Private) /api/users/:id
+Desc   - Upload Profile image for newly created User
+*/
+router.put(
+  '/:id',
+  [profileImageUploader.single('avatar')],
+  async (req, res) => {
+    try {
+      console.log('file.path', req.file.path);
+      let userID = req.params.id;
+      console.log('UserID', userID);
+      let user = await User.findById(userID);
+      if (user) {
+        user.avatar = req.file.path;
+        await user.save();
+        return res.json(req.file);
+      } else {
+        return res.status(400).json({ errors: [{ msg: 'Cannot file user' }] });
+      }
     } catch (err) {
       console.error(err.message);
       return res.status(500).send('Server Error');

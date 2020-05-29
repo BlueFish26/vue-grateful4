@@ -21,6 +21,16 @@ const actions = {
       throw err;
     }
   },
+  uploadProfileImage: async function({ commit }, { avatar, userid }) {
+    try {
+      const imageForm = new FormData();
+      imageForm.append('avatar', avatar, avatar.name);
+      const profileImage = await axios.put(`/api/users/${userid}`, imageForm);
+      console.log(profileImage);
+    } catch (err) {
+      throw err;
+    }
+  },
   loadAuthenticatedUser: async function({ commit }, token) {
     try {
       const response = await axios.get('/api/auth', {

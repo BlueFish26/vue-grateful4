@@ -22,7 +22,7 @@
     </section>
     <section class="profile">
       <div class="avatar">
-        <img src="@/assets/images/ac_sousuke_3_lanjut_shadowed.jpg" alt />
+        <img :src="auth.user.avatar" alt />
       </div>
       <div class="follow-button">
         <div class="name">
@@ -230,7 +230,9 @@ export default {
   },
   data() {
     return {
-      name: ""
+      name: "",
+      x: "",
+      y: ""
     };
   },
   computed: {

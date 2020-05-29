@@ -72,7 +72,7 @@
         <div class="input-group-file-upload">
           <div>
             <h5>Avatar</h5>
-            <input type="file" class="file-upload" />
+            <input type="file" class="file-upload" @change="onFileChange" />
           </div>
         </div>
         <input type="submit" class="btn secondary" value="Register" />
@@ -107,19 +107,28 @@ export default {
       email: "",
       password: "",
       handle: "",
-      motto: ""
+      motto: "",
+      avatarFile: ""
     };
   },
   computed: {
     ...mapGetters(["auth"])
   },
   methods: {
-    ...mapActions(["registerUser"]),
+    ...mapActions([
+      "registerUser",
+      "loadAuthenticatedUser",
+      "uploadProfileImage"
+    ]),
     onFocus,
     onBlur,
     redirectTo,
     validEmail,
+    onFileChange: function(event) {
+      this.avatarFile = event.target.files[0];
+    },
     registerNewUser: async function(event) {
+      //TODO: Add loading progress image....
       event.preventDefault();
       this.checkForm();
       if (!this.isFormValid) {
@@ -135,12 +144,16 @@ export default {
       };
       try {
         await this.registerUser(newUser);
-        //await this.loadAuthenticatedUser(this.auth.token);
-        //console.log(this.auth.token, this.auth.user);
+        await this.loadAuthenticatedUser(this.auth.token);
+        await this.uploadProfileImage({
+          avatar: this.avatarFile,
+          userid: this.auth.user._id
+        });
         this.redirectTo("/");
       } catch (err) {
         //console.log(err);
         if (err.response) {
+          console.log(err);
           this.errors.push(err.response.data.errors[0].msg);
         } else {
           console.log(err);
@@ -152,6 +165,7 @@ export default {
       let isNameValid = !!this.name;
       let isPasswordValid = !!this.password;
       let isEmailValid = this.validEmail(this.email);
+      let isAvatarValid = !!this.avatarFile;
       if (!isNameValid) {
         this.errors.push("Please enter Username");
       }
@@ -161,7 +175,11 @@ export default {
       if (!isEmailValid) {
         this.errors.push("Please enter valid Email Address");
       }
-      this.isFormValid = isEmailValid && isNameValid && isPasswordValid;
+      if (!isAvatarValid) {
+        this.errors.push("Please select an image for your Avatar");
+      }
+      this.isFormValid =
+        isEmailValid && isNameValid && isPasswordValid && isAvatarValid;
     }
   }
 };

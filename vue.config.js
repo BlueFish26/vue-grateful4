@@ -8,4 +8,10 @@ module.exports = {
       },
     },
   },
+  pages: {
+    index: {
+      entry: 'src/main.js',
+      title: 'Grateful4 v0.01',
+    },
+  },
 };
