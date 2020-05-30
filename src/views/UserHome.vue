@@ -85,6 +85,7 @@ export default {
     console.log("UserHome - Created");
     let handle = this.$route.params.handle;
     const token = localStorage.getItem("token");
+    //TODO: handle non-logged in user loading
     if (handle) {
       await this.loadRequestedUser(handle);
     } else {

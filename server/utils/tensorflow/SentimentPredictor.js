@@ -54,9 +54,9 @@ class SentimentPredictor {
       return wordIndex;
     });
     // Perform truncation and padding.
-    console.log('sequence', sequence);
+    //console.log('sequence', sequence);
     const paddedSequence = padSequences([sequence], this.maxLen);
-    console.log(paddedSequence);
+    //console.log(paddedSequence);
     const input = tf.tensor2d(paddedSequence, [1, this.maxLen]);
     const beginMs = performance.now();
     const predictOut = this.model.predict(input);

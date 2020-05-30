@@ -50,14 +50,25 @@ router.post(
       .withMessage('text is required'),
   ],
   async (req, res) => {
+    const { text } = req.body;
     const errors = validationResult(req);
+    const commentPositivity = global.predictor.predict(text);
+    console.log(commentPositivity);
+    if (commentPositivity.score < 0.7) {
+      return res
+        .status(400)
+        .json({
+          errors: [
+            { msg: "'Please enter a more positive comment, thank you.'" },
+          ],
+        });
+    }
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
     const user = await User.findById(req.user.id).select('-password');
     const email = user.email;
     const app_name = 'grateful4';
-    const { text } = req.body;
     const newPost = new Post({
       app_name,
       email,
@@ -183,7 +194,6 @@ Desc   - Retrieve a Post
 */
 router.get('/:id', async (req, res) => {
   try {
-    //const result = global.predictor.predict('great');
     //console.log(result.score);
     const post = await Post.findById(req.params.id).select('-comments');
     return res.json(post);

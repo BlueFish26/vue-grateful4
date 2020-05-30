@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-//const SentimentPredictor = require('./utils/tensorflow/SentimentPredictor');
-//const { HOSTED_URLS } = require('./utils/tensorflow');
+const SentimentPredictor = require('./utils/tensorflow/SentimentPredictor');
+const { HOSTED_URLS } = require('./utils/tensorflow');
 
 const connectDatabase = require('./utils/db');
 
@@ -31,9 +31,9 @@ if (process.env.NODE_ENV === 'production') {
 const port = process.env.PORT || 5000;
 
 app.listen(port, async () => {
-  //let predictor = new SentimentPredictor();
-  //await predictor.init(HOSTED_URLS);
-  //global.predictor = predictor;
+  let predictor = new SentimentPredictor();
+  await predictor.init(HOSTED_URLS);
+  global.predictor = predictor;
   console.log(`Server listening on port ${port}`);
   //console.log(process.env['NODE_CONFIG_DIR']);
 });

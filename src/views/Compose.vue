@@ -68,18 +68,22 @@ export default {
       reader.readAsDataURL(this.mediaFile);
     },
     uploadNewPost: async function() {
-      console.log("Create a new post, checking comment....");
-      await this.createNewPost({
-        token: this.auth.token,
-        post: { text: this.text }
-      });
-      console.log("Uploading image...");
-      await this.uploadImageToPost({
-        token: this.auth.token,
-        media: this.mediaFile,
-        postid: this.post._id
-      });
-      this.redirectTo(`/${this.auth.user.handle.replace("@", "")}`);
+      try {
+        console.log("Create a new post, checking comment....");
+        await this.createNewPost({
+          token: this.auth.token,
+          post: { text: this.text }
+        });
+        console.log("Uploading image...");
+        await this.uploadImageToPost({
+          token: this.auth.token,
+          media: this.mediaFile,
+          postid: this.post._id
+        });
+        this.redirectTo(`/${this.auth.user.handle.replace("@", "")}`);
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 };
