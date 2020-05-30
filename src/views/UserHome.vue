@@ -58,151 +58,17 @@
     </section>
     <section class="post-categories">
       <div class="category">
-        <i class="far fa-file-video"></i>
         <font-awesome-icon class="i" icon="file-video" />
       </div>
       <div class="category active">
-        <i class="far fa-images"></i>
         <font-awesome-icon class="i" icon="images" />
       </div>
       <div class="category">
-        <i class="far fa-heart"></i>
         <font-awesome-icon class="i" icon="heart" />
       </div>
     </section>
     <section class="post-section">
-      <div class="post">
-        <img src="@/assets/images/2019-06-29 062.jpg" alt />
-        <div class="post-metadata">
-          <div class="likes">
-            <i class="far fa-heart"></i>123
-          </div>
-          <div class="comments">
-            <i class="far fa-comment-alt"></i>123
-          </div>
-          <div class="views">
-            <i class="far fa-eye"></i>123
-          </div>
-        </div>
-        <p class="comment">My girls...&#9829;&#9829;&#9829;</p>
-        <a href="#">View comments</a>
-      </div>
-      <div class="post">
-        <img src="@/assets/images/2019-06-29 068.jpg" alt />
-        <div class="post-metadata">
-          <div class="likes">
-            <i class="far fa-heart"></i>123
-          </div>
-          <div class="comments">
-            <i class="far fa-comment-alt"></i>123
-          </div>
-          <div class="views">
-            <i class="far fa-eye"></i>123
-          </div>
-        </div>
-        <p class="comment">Love of my life...&#9829;</p>
-        <a href="#">View comments</a>
-      </div>
-      <div class="post">
-        <img src="@/assets/images/2019-09-28 020.jpg" alt />
-        <div class="post-metadata">
-          <div class="likes">
-            <i class="far fa-heart"></i>123
-          </div>
-          <div class="comments">
-            <i class="far fa-comment-alt"></i>123
-          </div>
-          <div class="views">
-            <i class="far fa-eye"></i>123
-          </div>
-        </div>
-        <p class="comment">Galit cya?...&#9786;</p>
-        <a href="#">View comments</a>
-      </div>
-      <div class="post">
-        <img src="@/assets/images/2019-09-27 031.jpg" alt />
-        <div class="post-metadata">
-          <div class="likes">
-            <i class="far fa-heart"></i>123
-          </div>
-          <div class="comments">
-            <i class="far fa-comment-alt"></i>123
-          </div>
-          <div class="views">
-            <i class="far fa-eye"></i>123
-          </div>
-        </div>
-        <p class="comment">What a long tounge!!!...&#9786;</p>
-        <a href="#">View comments</a>
-      </div>
-      <div class="post">
-        <img src="@/assets/images/fruit-2109063_1280.jpg" alt />
-        <div class="post-metadata">
-          <div class="likes">
-            <i class="far fa-heart"></i>123
-          </div>
-          <div class="comments">
-            <i class="far fa-comment-alt"></i>123
-          </div>
-          <div class="views">
-            <i class="far fa-eye"></i>123
-          </div>
-        </div>
-        <p class="comment">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis
-          quae itaque molestiae voluptatem, quia veritatis omnis ea est
-          accusantium. Sapiente..
-        </p>
-        <a href="#">View comments</a>
-      </div>
-      <div class="post">
-        <img src="@/assets/images/backboard-1866968_1280.jpg" alt />
-        <div class="post-metadata">
-          <div class="likes">
-            <i class="far fa-heart"></i>123
-          </div>
-          <div class="comments">
-            <i class="far fa-comment-alt"></i>123
-          </div>
-          <div class="views">
-            <i class="far fa-eye"></i>123
-          </div>
-        </div>
-        <p class="comment">Lorem, ipsum dolor.</p>
-        <a href="#">View comments</a>
-      </div>
-      <div class="post">
-        <img src="@/assets/images/racing-car-4425049_1280.jpg" alt />
-        <div class="post-metadata">
-          <div class="likes">
-            <i class="far fa-heart"></i>123
-          </div>
-          <div class="comments">
-            <i class="far fa-comment-alt"></i>123
-          </div>
-          <div class="views">
-            <i class="far fa-eye"></i>123
-          </div>
-        </div>
-        <p class="comment">Lorem, ipsum dolor.</p>
-        <a href="#">View comments</a>
-      </div>
-      <div class="post">
-        <img src="@/assets/images/sparrow-5138163_1920.jpg" alt />
-        <div class="post-metadata">
-          <div class="likes">
-            <i class="far fa-heart"></i>123
-          </div>
-          <div class="comments">
-            <i class="far fa-comment-alt"></i>123
-          </div>
-          <div class="views">
-            <i class="far fa-eye"></i>123
-          </div>
-        </div>
-        <p class="comment">Lorem, ipsum dolor.</p>
-        <a href="#">View comments</a>
-      </div>
+      <Post v-for="post in posts" :key="post._id" v-bind:post="post" />
     </section>
   </div>
 </template>
@@ -210,13 +76,13 @@
 <script>
 import { redirectTo } from "../ui-utils/routing";
 import { mapActions, mapGetters } from "vuex";
+import Post from "../components/Post";
 
 export default {
   name: "UserHome",
-  components: {},
+  components: { Post },
   created: async function() {
-    console.log("Created");
-
+    console.log("UserHome - Created");
     let handle = this.$route.params.handle;
     const token = localStorage.getItem("token");
     if (handle) {
@@ -229,7 +95,8 @@ export default {
       }
     }
     if (token) {
-      this.loadToken(token);
+      await this.loadToken(token);
+      await this.loadPostsForUser(token);
     }
     if (!this.auth.user) {
       this.redirectTo("/");
@@ -239,14 +106,15 @@ export default {
     return {};
   },
   computed: {
-    ...mapGetters(["auth"])
+    ...mapGetters(["auth", "posts"])
   },
   methods: {
     ...mapActions([
       "loadAuthenticatedUser",
       "loadRequestedUser",
       "loadToken",
-      "logoutUser"
+      "logoutUser",
+      "loadPostsForUser"
     ]),
     redirectTo,
     logout: function() {

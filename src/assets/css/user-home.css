@@ -180,7 +180,7 @@
 }
 .post-section .post img {
   align-self: center;
-  object-fit: cover;
+  object-fit: contain;
   max-height: 300px;
   min-height: 300px;
   border-radius: 0.5rem;
@@ -199,6 +199,7 @@
   align-content: center;
   justify-content: center;
 }
+.post-section .post .post-metadata .i,
 .post-section .post .post-metadata i {
   font-size: 2rem;
   margin-right: 0.5rem;

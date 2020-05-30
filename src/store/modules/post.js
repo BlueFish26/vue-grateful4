@@ -39,10 +39,22 @@ const actions = {
       throw err;
     }
   },
+  loadPostsForUser: async function({ commit }, token) {
+    try {
+      const header = {
+        headers: { 'x-auth-token': token },
+      };
+      const response = await axios.get('/api/posts', header);
+      commit('loadPosts', response.data);
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 const mutations = {
   setPost: (state, post) => (state.post = post),
   updatePost: (state, media) => (state.post.media = media),
+  loadPosts: (state, posts) => (state.posts = posts),
 };
 export default {
   state,

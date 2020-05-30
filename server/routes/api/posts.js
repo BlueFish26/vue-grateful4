@@ -101,6 +101,21 @@ router.put(
 );
 
 /*
+Route   - GET /api/posts
+Desc    - Get Posts by User
+*/
+router.get('/', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const posts = await Post.find({ email: user.email }).select('-comments');
+    return res.json(posts);
+  } catch (err) {
+    console.error(err.message);
+    return res.status(500).send('Server Error');
+  }
+});
+
+/*
 Route  - POST /api/posts/comment/:id
 Desc   - Add a comment to a Post
 */

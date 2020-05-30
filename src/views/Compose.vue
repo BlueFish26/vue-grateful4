@@ -6,7 +6,7 @@
           <div class="avatar">
             <img :src="auth.user.avatar" alt />
           </div>
-          <div class="username">@bluefish</div>
+          <div class="username">{{auth.user.handle}}</div>
           <div class="input-group-file-upload">
             <div>
               <h5>Media</h5>
@@ -61,11 +61,9 @@ export default {
     redirectTo,
     onMediaFileChange: function(event) {
       this.mediaFile = event.target.files[0];
-      console.log(this.mediaFile);
       let reader = new FileReader();
       reader.onload = e => {
         this.mediaSrc = e.target.result;
-        console.log(this.mediaSrc);
       };
       reader.readAsDataURL(this.mediaFile);
     },
@@ -75,14 +73,13 @@ export default {
         token: this.auth.token,
         post: { text: this.text }
       });
-      console.log("Uplaoding image...");
-      console.log(this.post);
+      console.log("Uploading image...");
       await this.uploadImageToPost({
         token: this.auth.token,
         media: this.mediaFile,
         postid: this.post._id
       });
-      this.redirectTo(`/${this.auth.user.name}`);
+      this.redirectTo(`/${this.auth.user.handle.replace("@", "")}`);
     }
   }
 };
