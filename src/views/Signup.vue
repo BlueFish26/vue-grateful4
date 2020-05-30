@@ -59,14 +59,7 @@
         <div class="input-group textarea-group">
           <div>
             <h5>Motto</h5>
-            <textarea
-              type="password"
-              class="textarea"
-              v-on:focus="onFocus"
-              v-on:blur="onBlur"
-              v-model="motto"
-              required
-            />
+            <textarea class="textarea" v-on:focus="onFocus" v-model="motto" required />
           </div>
         </div>
         <div class="input-group-file-upload">
@@ -146,6 +139,7 @@ export default {
         await this.registerUser(newUser);
         await this.loadAuthenticatedUser(this.auth.token);
         await this.uploadProfileImage({
+          token: this.auth.token,
           avatar: this.avatarFile,
           userid: this.auth.user._id
         });

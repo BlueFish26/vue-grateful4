@@ -1,4 +1,9 @@
 {
   "mongoURI": "mongodb://vue_user01:mevn123@ds145659.mlab.com:45659/vue_express",
-  "jwtSecret": "mysecrettoken"
+  "jwtSecret": "mysecrettoken",
+  "cloudinary": {
+    "cloud_name": "riverbytes",
+    "api_key": "993676511158831",
+    "api_secret": "QF54SdhRiRomo1FElFd6kyDo6LE"
+  }
 }

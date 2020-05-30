@@ -4,6 +4,7 @@ import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import Signup from '../views/Signup.vue';
 import UserHome from '../views/UserHome.vue';
+import Compose from '../views/Compose.vue';
 
 Vue.use(VueRouter);
 
@@ -19,9 +20,9 @@ const routes = [
     component: Signup,
   },
   {
-    path: '/:handle',
-    name: 'UserHome',
-    component: UserHome,
+    path: '/Compose',
+    name: 'Compose',
+    component: Compose,
   },
   {
     path: '/Home',
@@ -36,6 +37,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ '../views/About.vue'),
+  },
+  {
+    path: '/:handle',
+    name: 'UserHome',
+    component: UserHome,
   },
 ];
 

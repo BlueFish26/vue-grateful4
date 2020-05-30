@@ -1,4 +1,0 @@
-{
-  "mongoURI": "mongodb://vue_user01:mevn123@ds145659.mlab.com:45659/vue_express",
-  "jwtSecret": "mysecrettoken"
-}

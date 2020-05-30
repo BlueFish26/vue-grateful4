@@ -3,9 +3,9 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('config');
-
 const { check, validationResult } = require('express-validator');
-const checkJwt = require('../../utils/checkJwt');
+const checkJwt = require('../../utils/checkJwt'); //Auth0 middleware
+const auth = require('../../middleware/auth'); //Simple JWT middleware
 const User = require('../../models/User');
 
 const multer = require('multer');
@@ -13,9 +13,9 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 cloudinary.config({
-  cloud_name: 'riverbytes',
-  api_key: '993676511158831',
-  api_secret: 'QF54SdhRiRomo1FElFd6kyDo6LE',
+  cloud_name: config.cloudinary.cloud_name,
+  api_key: config.cloudinary.api_key,
+  api_secret: config.cloudinary.api_secret,
 });
 
 const profileImageStorage = new CloudinaryStorage({
@@ -122,7 +122,7 @@ Desc   - Upload Profile image for newly created User
 */
 router.put(
   '/:id',
-  [profileImageUploader.single('avatar')],
+  [auth, profileImageUploader.single('avatar')],
   async (req, res) => {
     try {
       console.log('file.path', req.file.path);

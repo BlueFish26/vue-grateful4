@@ -21,11 +21,13 @@ const actions = {
       throw err;
     }
   },
-  uploadProfileImage: async function({ commit }, { avatar, userid }) {
+  uploadProfileImage: async function({ commit }, { token, avatar, userid }) {
     try {
       const imageForm = new FormData();
       imageForm.append('avatar', avatar, avatar.name);
-      const profileImage = await axios.put(`/api/users/${userid}`, imageForm);
+      const profileImage = await axios.put(`/api/users/${userid}`, imageForm, {
+        headers: { 'x-auth-token': token },
+      });
       console.log(profileImage);
     } catch (err) {
       throw err;

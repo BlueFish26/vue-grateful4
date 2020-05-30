@@ -10,6 +10,11 @@ const UserSchema = new mongoose.Schema(
     avatar: { type: String },
     date: { type: Date, default: Date.now },
     motto: { type: String, required: true, maxlength: 500 },
+    numbers: {
+      friends: { type: Number },
+      followers: { type: Number },
+      follwing: { type: Number },
+    },
   },
   {
     collation: { locale: 'en', strength: 2 },

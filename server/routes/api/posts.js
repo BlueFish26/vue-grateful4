@@ -1,14 +1,44 @@
 const express = require('express');
 const checkJwt = require('../../utils/checkJwt');
-
+const config = require('config');
+const auth = require('../../middleware/auth'); //Simple JWT middleware
 const Post = require('../../models/Post');
 const { check, validationResult } = require('express-validator');
 const router = express.Router();
 
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+cloudinary.config({
+  cloud_name: config.cloudinary.cloud_name,
+  api_key: config.cloudinary.api_key,
+  api_secret: config.cloudinary.api_secret,
+});
+
+const postImageStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    return {
+      folder: 'posts',
+      format: 'png',
+      public_id: `post_${req.params.id}`,
+      eager: [
+        {
+          crop: 'pad',
+          width: 500,
+          height: 500,
+        },
+      ],
+    };
+  },
+});
+const postImageUploader = multer({ storage: postImageStorage });
+
 router.post(
   '/',
   [
-    checkJwt,
+    auth,
     check('app_name')
       .not()
       .isEmpty()
@@ -44,7 +74,7 @@ router.post(
 router.post(
   '/comment/:id',
   [
-    checkJwt,
+    auth,
     check('text')
       .not()
       .isEmpty()
@@ -82,7 +112,7 @@ router.post(
   }
 );
 
-router.get('/app/:app_name', [checkJwt], async (req, res) => {
+router.get('/app/:app_name', [auth], async (req, res) => {
   try {
     const posts = await Post.find({ app_name: req.params.app_name })
       .select('-comments')

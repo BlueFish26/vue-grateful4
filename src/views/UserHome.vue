@@ -6,16 +6,23 @@
       </div>
       <div class="nav-buttons">
         <ul>
+          <li v-if="auth.isAuthenticated">
+            <span class="nav-button active post" @click="redirectTo('/compose')">Compose</span>
+          </li>
           <li>
             <span
               v-if="!auth.isAuthenticated"
               class="nav-button active"
               @click="redirectTo('/')"
             >Log In</span>
-            <span v-if="auth.isAuthenticated" class="nav-button logout" @click="logout">Log out</span>
+            <span
+              v-if="auth.isAuthenticated"
+              class="nav-button active logout"
+              @click="logout"
+            >Log out</span>
           </li>
           <li v-if="!auth.isAuthenticated">
-            <span class="nav-button">Sign Up</span>
+            <span class="nav-button active">Sign Up</span>
           </li>
         </ul>
       </div>
@@ -26,22 +33,22 @@
       </div>
       <div class="follow-button">
         <div class="name">
-          <span class="fullname">{{name}}</span>
+          <span class="fullname">{{auth.user.name}}</span>
           <span class="handle">{{auth.user.handle}}</span>
         </div>
-        <button>Follow</button>
+        <button v-if="auth.isAuthenticated">Follow</button>
       </div>
       <div class="user-numbers">
         <div>
-          <span class="number">123</span>
+          <span class="number">{{auth.user.numbers ? auth.user.numbers.friends : 0 }}</span>
           <span>friends</span>
         </div>
         <div>
-          <span class="number">123</span>
+          <span class="number">{{auth.user.numbers ? auth.user.numbers.followers : 0 }}</span>
           <span>followers</span>
         </div>
         <div>
-          <span class="number">123</span>
+          <span class="number">{{auth.user.numbers ? auth.user.numbers.following : 0 }}</span>
           <span>following</span>
         </div>
       </div>
@@ -52,12 +59,15 @@
     <section class="post-categories">
       <div class="category">
         <i class="far fa-file-video"></i>
+        <font-awesome-icon class="i" icon="file-video" />
       </div>
       <div class="category active">
         <i class="far fa-images"></i>
+        <font-awesome-icon class="i" icon="images" />
       </div>
       <div class="category">
         <i class="far fa-heart"></i>
+        <font-awesome-icon class="i" icon="heart" />
       </div>
     </section>
     <section class="post-section">
@@ -207,7 +217,6 @@ export default {
   created: async function() {
     console.log("Created");
     let handle = this.$route.params.handle;
-    console.log("params", this.$route.params);
     const token = localStorage.getItem("token");
     if (handle) {
       await this.loadRequestedUser(handle);
@@ -221,19 +230,12 @@ export default {
     if (token) {
       this.loadToken(token);
     }
-
-    if (this.auth.user) {
-      this.name = this.auth.user.name;
-    } else {
+    if (!this.auth.user) {
       this.redirectTo("/");
     }
   },
   data() {
-    return {
-      name: "",
-      x: "",
-      y: ""
-    };
+    return {};
   },
   computed: {
     ...mapGetters(["auth"])

@@ -38,15 +38,15 @@
 }
 .header .nav-button.active {
   background-color: var(--blue);
-  padding: 0.4rem;
+  padding: 0.5rem;
   border-radius: 0.2rem;
   color: #fff;
 }
 .header .nav-button.logout {
   background-color: var(--light-gray);
-  padding: 0.4rem;
-  border-radius: 0.2rem;
-  color: #fff;
+}
+.header .nav-button.post {
+  background-color: var(--yellow);
 }
 
 .profile {
@@ -162,6 +162,7 @@
   top: 35px;
   left: 0;
 }
+.post-categories .category .i,
 .post-categories .category i {
   font-size: 3rem;
 }
