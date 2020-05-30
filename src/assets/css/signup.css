@@ -1,0 +1,40 @@
+.sign-up-container {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+}
+.sign-up-container .image {
+  background: url('../images/cat-2536662_1920.jpg') center no-repeat;
+  background-size: cover;
+  display: none;
+}
+.input-group {
+  grid-template-columns: 1fr;
+}
+.signup-section {
+  padding: 1.5rem;
+  margin: 2rem auto;
+  max-width: 500px;
+}
+.signup-section form h1 {
+  font-size: 2rem;
+}
+.signup-section form p {
+  font-size: 1.3rem;
+}
+@media screen and (min-width: 768px) {
+  .sign-up-container .image {
+    display: block;
+    background-position-y: 20%;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .sign-up-container {
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
