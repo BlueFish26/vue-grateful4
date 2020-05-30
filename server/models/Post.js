@@ -4,6 +4,7 @@ const PostSchema = new Schema(
   {
     app_name: { type: String, required: true },
     email: { type: String, required: true },
+    media: { type: String },
     text: { type: String, required: true },
     likes: [{ email: { type: String } }],
     date: { type: Date, default: Date.now },

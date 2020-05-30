@@ -38,7 +38,7 @@ const profileImageStorage = new CloudinaryStorage({
 const profileImageUploader = multer({ storage: profileImageStorage });
 
 /*
-Route  -  POST /api/users
+Route  - POST /api/users
 Desc   - Register new user
 */
 router.post(

@@ -1,10 +1,12 @@
 const express = require('express');
-const checkJwt = require('../../utils/checkJwt');
-const config = require('config');
-const auth = require('../../middleware/auth'); //Simple JWT middleware
-const Post = require('../../models/Post');
-const { check, validationResult } = require('express-validator');
 const router = express.Router();
+const checkJwt = require('../../utils/checkJwt'); //Auth0 middleware
+const auth = require('../../middleware/auth'); //Simple JWT middleware
+const config = require('config');
+const { check, validationResult } = require('express-validator');
+
+const Post = require('../../models/Post');
+const User = require('../../models/User');
 
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
@@ -34,18 +36,14 @@ const postImageStorage = new CloudinaryStorage({
   },
 });
 const postImageUploader = multer({ storage: postImageStorage });
-
+/*
+Route  - POST /api/posts
+Desc   - Create a new Post
+*/
 router.post(
   '/',
   [
     auth,
-    check('app_name')
-      .not()
-      .isEmpty()
-      .withMessage('app_name is required'),
-    check('email')
-      .isEmail()
-      .withMessage('email is required'),
     check('text')
       .not()
       .isEmpty()
@@ -56,7 +54,10 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { app_name, email, text } = req.body;
+    const user = await User.findById(req.user.id).select('-password');
+    const email = user.email;
+    const app_name = 'grateful4';
+    const { text } = req.body;
     const newPost = new Post({
       app_name,
       email,
@@ -64,6 +65,7 @@ router.post(
     });
     newPost.save((err) => {
       if (err) {
+        console.log(err);
         return res.status(500).send(err.message);
       }
     });
@@ -71,6 +73,37 @@ router.post(
   }
 );
 
+/*
+Route  - PUT /api/posts/:id
+Desc   - Upload image for Post
+*/
+router.put(
+  '/:id',
+  [auth, postImageUploader.single('media')],
+  async (req, res) => {
+    try {
+      console.log('file.path', req.file.path);
+      let userID = req.user.id;
+      console.log('UserID', userID);
+      let post = await Post.findById(req.params.id);
+      if (post) {
+        post.media = req.file.path;
+        await post.save();
+        return res.json(req.file);
+      } else {
+        return res.status(400).json({ errors: [{ msg: 'Cannot file Post' }] });
+      }
+    } catch (err) {
+      console.error(err.message);
+      return res.status(500).send('Server Error');
+    }
+  }
+);
+
+/*
+Route  - POST /api/posts/comment/:id
+Desc   - Add a comment to a Post
+*/
 router.post(
   '/comment/:id',
   [
@@ -112,6 +145,10 @@ router.post(
   }
 );
 
+/*
+Route  - GET /api/posts/app/:app_name
+Desc   - Retrieve Posts based on App_name 
+ */
 router.get('/app/:app_name', [auth], async (req, res) => {
   try {
     const posts = await Post.find({ app_name: req.params.app_name })
@@ -125,6 +162,10 @@ router.get('/app/:app_name', [auth], async (req, res) => {
   }
 });
 
+/*
+Route  - GET /api/posts/:id
+Desc   - Retrieve a Post
+*/
 router.get('/:id', async (req, res) => {
   try {
     //const result = global.predictor.predict('great');
@@ -136,6 +177,11 @@ router.get('/:id', async (req, res) => {
     return res.status(500).send(err.message);
   }
 });
+
+/*
+Route  - GET /api/posts/comment/:id
+Desc   - Retrieve a Comments by Post
+*/
 router.get('/comments/:post_id', async (req, res) => {
   try {
     const comments = await Post.findById(req.params.post_id)

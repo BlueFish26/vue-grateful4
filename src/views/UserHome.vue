@@ -216,6 +216,7 @@ export default {
   components: {},
   created: async function() {
     console.log("Created");
+
     let handle = this.$route.params.handle;
     const token = localStorage.getItem("token");
     if (handle) {

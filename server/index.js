@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const SentimentPredictor = require('./utils/tensorflow/SentimentPredictor');
-const { HOSTED_URLS } = require('./utils/tensorflow');
+//const SentimentPredictor = require('./utils/tensorflow/SentimentPredictor');
+//const { HOSTED_URLS } = require('./utils/tensorflow');
 
 const connectDatabase = require('./utils/db');
 

@@ -21,10 +21,16 @@
       <div class="input-group textarea-group">
         <div>
           <h5>Comment</h5>
-          <textarea class="textarea" v-on:focus="onFocus" v-on:blur="onBlur" required />
+          <textarea
+            class="textarea"
+            v-model="text"
+            v-on:focus="onFocus"
+            v-on:blur="onBlur"
+            required
+          />
         </div>
       </div>
-      <button class="btn primary">Post</button>
+      <button class="btn primary" @click="uploadNewPost">Post</button>
     </section>
   </div>
 </template>
@@ -40,14 +46,16 @@ export default {
   data() {
     return {
       mediaFile: null,
-      mediaSrc: ""
+      mediaSrc: "",
+      text: ""
     };
   },
   created: function() {},
   computed: {
-    ...mapGetters(["auth"])
+    ...mapGetters(["auth", "post"])
   },
   methods: {
+    ...mapActions(["createNewPost", "uploadImageToPost"]),
     onFocus,
     onBlur,
     redirectTo,
@@ -60,6 +68,21 @@ export default {
         console.log(this.mediaSrc);
       };
       reader.readAsDataURL(this.mediaFile);
+    },
+    uploadNewPost: async function() {
+      console.log("Create a new post, checking comment....");
+      await this.createNewPost({
+        token: this.auth.token,
+        post: { text: this.text }
+      });
+      console.log("Uplaoding image...");
+      console.log(this.post);
+      await this.uploadImageToPost({
+        token: this.auth.token,
+        media: this.mediaFile,
+        postid: this.post._id
+      });
+      this.redirectTo(`/${this.auth.user.name}`);
     }
   }
 };
