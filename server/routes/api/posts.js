@@ -55,13 +55,9 @@ router.post(
     const commentPositivity = global.predictor.predict(text);
     console.log(commentPositivity);
     if (commentPositivity.score < 0.7) {
-      return res
-        .status(400)
-        .json({
-          errors: [
-            { msg: "'Please enter a more positive comment, thank you.'" },
-          ],
-        });
+      return res.status(400).json({
+        errors: [{ msg: "'Please enter a more positive comment, thank you.'" }],
+      });
     }
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -115,10 +111,14 @@ router.put(
 Route   - GET /api/posts
 Desc    - Get Posts by User
 */
-router.get('/', auth, async (req, res) => {
+router.get('/handle/:handle', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    const posts = await Post.find({ email: user.email }).select('-comments');
+    let handle = req.params.handle;
+    if (!handle.startsWith('@')) {
+      handle = `@${handle}`;
+    }
+    const user = await User.find({ handle: handle });
+    const posts = await Post.find({ email: user[0].email }).select('-comments');
     return res.json(posts);
   } catch (err) {
     console.error(err.message);

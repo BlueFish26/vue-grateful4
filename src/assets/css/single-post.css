@@ -1,3 +1,10 @@
+.compose-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 1.5rem auto;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+}
 .user-info {
   display: flex;
   flex-direction: row;
@@ -51,11 +58,11 @@
 }
 
 @media screen and (min-width: 700px) {
-  .post-section {
+  .compose-container .post-section {
     display: grid;
     grid-template-columns: 1fr;
   }
-  .post-section .post img {
+  .compose-container .post-section .post img {
     align-self: top;
     max-height: 500px;
   }

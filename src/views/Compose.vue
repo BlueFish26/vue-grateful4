@@ -1,5 +1,5 @@
 <template>
-  <div class="user-home-container">
+  <div class="compose-container">
     <section class="post-section">
       <div class="post">
         <div class="user-info">
@@ -50,12 +50,19 @@ export default {
       text: ""
     };
   },
-  created: function() {},
+  created: async function() {
+    const token = localStorage.getItem("token");
+    await this.loadAuthenticatedUser(token);
+  },
   computed: {
     ...mapGetters(["auth", "post"])
   },
   methods: {
-    ...mapActions(["createNewPost", "uploadImageToPost"]),
+    ...mapActions([
+      "loadAuthenticatedUser",
+      "createNewPost",
+      "uploadImageToPost"
+    ]),
     onFocus,
     onBlur,
     redirectTo,
@@ -90,6 +97,5 @@ export default {
 </script>
 
 <style scoped>
-@import "../assets/css/user-home.css";
 @import "../assets/css/single-post.css";
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="post">
+  <div class="post" @click="redirectTo(`/${handle}/${post._id}`)">
     <img :src="post.media" :alt="post.text" />
     <div class="post-metadata">
       <div class="likes">
@@ -15,11 +15,18 @@
 </template>
 
 <script>
+import { redirectTo } from "../ui-utils/routing";
 export default {
   name: "Post",
-  props: ["post"]
+  props: ["post", "handle"],
+  created: function() {
+    console.log(this.handle);
+  },
+  methods: {
+    redirectTo
+  }
 };
 </script>
 
-<style scoped>
+<style>
 </style>

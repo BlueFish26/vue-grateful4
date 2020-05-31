@@ -39,13 +39,21 @@ const actions = {
       throw err;
     }
   },
-  loadPostsForUser: async function({ commit }, token) {
+  loadPostsForUser: async function({ commit }, { token, handle }) {
     try {
       const header = {
         headers: { 'x-auth-token': token },
       };
-      const response = await axios.get('/api/posts', header);
+      const response = await axios.get(`/api/posts/handle/${handle}`, header);
       commit('loadPosts', response.data);
+    } catch (err) {
+      throw err;
+    }
+  },
+  loadPostById: async function({ commit }, postid) {
+    try {
+      const response = await axios.get(`/api/posts/${postid}`);
+      commit('setPost', response.data);
     } catch (err) {
       throw err;
     }

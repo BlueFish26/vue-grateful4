@@ -68,7 +68,7 @@
       </div>
     </section>
     <section class="post-section">
-      <Post v-for="post in posts" :key="post._id" v-bind:post="post" />
+      <Post v-for="post in posts" :key="post._id" v-bind:post="post" v-bind:handle="handle" />
     </section>
   </div>
 </template>
@@ -83,28 +83,30 @@ export default {
   components: { Post },
   created: async function() {
     console.log("UserHome - Created");
-    let handle = this.$route.params.handle;
+    this.handle = this.$route.params.handle;
+    let handle = this.handle;
+    console.log("handle", handle);
     const token = localStorage.getItem("token");
-    //TODO: handle non-logged in user loading
-    if (handle) {
-      await this.loadRequestedUser(handle);
-    } else {
-      if (token) {
+    if (token) this.auth.isAuthenticated = true;
+
+    if (token && this.auth.user) {
+      if (this.auth.user.handle == handle) {
         await this.loadAuthenticatedUser(token);
+        await this.loadPostsForUser({ token, handle });
       } else {
-        this.redirectTo("/");
+        await this.loadRequestedUser(handle);
+        await this.loadPostsForUser({ token, handle });
       }
-    }
-    if (token) {
-      await this.loadToken(token);
-      await this.loadPostsForUser(token);
-    }
-    if (!this.auth.user) {
-      this.redirectTo("/");
+    } else {
+      await this.loadRequestedUser(handle);
+      await this.loadPostsForUser({ token, handle });
     }
   },
   data() {
-    return {};
+    return {
+      handle: "",
+      loading: false
+    };
   },
   computed: {
     ...mapGetters(["auth", "posts"])

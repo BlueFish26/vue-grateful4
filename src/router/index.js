@@ -5,6 +5,7 @@ import Login from '../views/Login.vue';
 import Signup from '../views/Signup.vue';
 import UserHome from '../views/UserHome.vue';
 import Compose from '../views/Compose.vue';
+import SinglePost from '../views/SinglePost.vue';
 
 Vue.use(VueRouter);
 
@@ -23,6 +24,11 @@ const routes = [
     path: '/Compose',
     name: 'Compose',
     component: Compose,
+  },
+  {
+    path: '/:handle/:postid',
+    name: 'SinglePost',
+    component: SinglePost,
   },
   {
     path: '/Home',
