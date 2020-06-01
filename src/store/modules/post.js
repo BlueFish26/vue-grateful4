@@ -58,11 +58,23 @@ const actions = {
       throw err;
     }
   },
+  loadCommentsByPostId: async function({ commit }, postid) {
+    try {
+      const response = await axios.get(`/api/posts/comments/${postid}`);
+      commit('setComments', response.data.comments);
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 const mutations = {
-  setPost: (state, post) => (state.post = post),
+  setPost: (state, post) => {
+    state.post = post;
+    state.post.comments = [];
+  },
   updatePost: (state, media) => (state.post.media = media),
   loadPosts: (state, posts) => (state.posts = posts),
+  setComments: (state, comments) => (state.post.comments = comments),
 };
 export default {
   state,

@@ -138,13 +138,6 @@ router.post(
       .not()
       .isEmpty()
       .withMessage('text is required'),
-    check('email')
-      .isEmail()
-      .withMessage('email is required'),
-    check('name')
-      .not()
-      .isEmpty()
-      .withMessage('name is required'),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -152,18 +145,16 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     try {
+      const user = await User.findById(req.user.id).select('-password');
       const post = await Post.findById(req.params.id);
       const newComment = {
         text: req.body.text,
-        email: req.body.email,
-        name: req.body.name,
+        handle: user.handle,
+        avatar: user.avatar,
+        user: req.user.id,
       };
       post.comments.unshift(newComment);
-      post.save((err) => {
-        if (err) {
-          return res.status(500).send(err.message);
-        }
-      });
+      await post.save();
       return res.json(newComment);
     } catch (err) {
       return res.status(500).send(err.message);

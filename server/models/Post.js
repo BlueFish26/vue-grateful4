@@ -10,8 +10,9 @@ const PostSchema = new Schema(
     date: { type: Date, default: Date.now },
     comments: [
       {
-        email: { type: String, required: true },
-        name: { type: String, required: true },
+        user: { type: Schema.Types.ObjectId, ref: 'user' },
+        handle: { type: String, required: true },
+        avatar: { type: String, required: true },
         text: { type: String, required: true },
         date: { type: Date, default: Date.now },
       },

@@ -7,10 +7,9 @@
       <div class="nav-buttons">
         <ul>
           <li>
-            <a class="nav-button active" href="#">Log In</a>
-          </li>
-          <li>
-            <a class="nav-button" href="#">Sign Up</a>
+            <span class="nav-button active" @click="redirectTo(`/${handle}`)"
+              >Back</span
+            >
           </li>
         </ul>
       </div>
@@ -22,7 +21,7 @@
           <div class="avatar">
             <img :src="auth.user.avatar" alt />
           </div>
-          <div class="username">@{{handle}}</div>
+          <div class="username">@{{ handle }}</div>
         </div>
 
         <img v-if="post" :src="post.media" alt />
@@ -30,19 +29,19 @@
           <div class="likes">
             <font-awesome-icon class="i" icon="heart" />123
           </div>
-          <div class="comments">
+          <!-- <div class="comments">
             <font-awesome-icon class="i" icon="comment-alt" />120
-          </div>
+          </div> -->
         </div>
-        <p class="comment">{{post.text}}</p>
+        <p class="comment">{{ post.text }}</p>
       </div>
     </section>
-    <section class="add-comment">
+    <section class="add-comment" v-if="showCommentBox">
       <div class="user-info">
         <div class="avatar">
-          <img src="images/ac_sousuke_3_lanjut_shadowed.jpg" alt />
+          <img :src="auth.user.avatar" alt />
         </div>
-        <div class="username">@bluefish</div>
+        <div class="username">{{ auth.user.handle }}</div>
       </div>
       <div class="input-group">
         <div>
@@ -52,66 +51,59 @@
       </div>
       <button class="btn primary">Comment</button>
     </section>
-    <section class="comments-section">
-      <div class="comment">
-        <div class="user-info">
-          <div class="avatar">
-            <img src="images/ac_sousuke_3_lanjut_shadowed.jpg" alt />
-          </div>
-          <div class="username">@bluefish</div>
-        </div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus
-          sed alias porro repudiandae deleniti doloribus?
-        </p>
-      </div>
-      <div class="comment">
-        <div class="user-info">
-          <div class="avatar">
-            <img src="images/ac_sousuke_3_lanjut_shadowed.jpg" alt />
-          </div>
-          <div class="username">@bluefish</div>
-        </div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus
-          sed alias porro repudiandae deleniti doloribus?
-        </p>
-      </div>
+    <section class="comments-section" v-if="commentsLoaded">
+      <Comment
+        v-for="comment in post.comments"
+        v-bind:comment="comment"
+        :key="comment._id"
+      />
     </section>
   </div>
 </template>
 
 <script>
-import { onFocus, onBlur } from "../ui-utils/inputs";
-import { redirectTo } from "../ui-utils/routing";
-import { mapActions, mapGetters } from "vuex";
+import { onFocus, onBlur } from '../ui-utils/inputs';
+import { redirectTo } from '../ui-utils/routing';
+import { mapActions, mapGetters } from 'vuex';
+import Comment from '../components/Comment';
 
 export default {
-  name: "SinglePost",
-  components: {},
+  name: 'SinglePost',
+  components: { Comment },
   data() {
     return {
       loading: false,
-      handle: ""
+      handle: '',
+      postid: '',
+      showCommentBox: false,
+      commentsLoaded: false,
     };
   },
   created: async function() {
-    const token = localStorage.getItem("token");
-    await this.loadAuthenticatedUser(token);
-    console.log(this.$route.params);
     this.handle = this.$route.params.handle;
-    let postid = this.$route.params.postid;
-    await this.loadPostById(postid);
+    this.postid = this.$route.params.postid;
+    const token = localStorage.getItem('token');
+    await this.loadAuthenticatedUser(token);
+    await this.loadPostById(this.postid);
     console.log(this.post);
+    await this.loadCommentsByPostId(this.postid);
+    console.log(this.post);
+    if (this.post.comments && this.post.comments.length > 0) {
+      this.commentsLoaded = true;
+    }
   },
   computed: {
-    ...mapGetters(["auth", "post"])
+    ...mapGetters(['auth', 'post']),
   },
   methods: {
-    ...mapActions(["loadAuthenticatedUser", "loadPostById"])
-  }
+    ...mapActions([
+      'loadAuthenticatedUser',
+      'loadPostById',
+      'loadCommentsByPostId',
+    ]),
+    redirectTo,
+  },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
