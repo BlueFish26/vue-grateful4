@@ -7,9 +7,7 @@
       <div class="nav-buttons">
         <ul>
           <li>
-            <span class="nav-button active" @click="redirectTo(`/${handle}`)"
-              >Back</span
-            >
+            <span class="nav-button active" @click="redirectTo(`/${handle}`)">Back</span>
           </li>
         </ul>
       </div>
@@ -31,7 +29,7 @@
           </div>
           <!-- <div class="comments">
             <font-awesome-icon class="i" icon="comment-alt" />120
-          </div> -->
+          </div>-->
         </div>
         <p class="comment">{{ post.text }}</p>
       </div>
@@ -46,43 +44,39 @@
       <div class="input-group">
         <div>
           <h5>Comment</h5>
-          <input type="text" class="input" />
+          <input type="text" class="input" @focus="onFocus" @blur="onBlur" />
         </div>
       </div>
       <button class="btn primary">Comment</button>
     </section>
     <section class="comments-section" v-if="commentsLoaded">
-      <Comment
-        v-for="comment in post.comments"
-        v-bind:comment="comment"
-        :key="comment._id"
-      />
+      <Comment v-for="comment in post.comments" v-bind:comment="comment" :key="comment._id" />
     </section>
   </div>
 </template>
 
 <script>
-import { onFocus, onBlur } from '../ui-utils/inputs';
-import { redirectTo } from '../ui-utils/routing';
-import { mapActions, mapGetters } from 'vuex';
-import Comment from '../components/Comment';
+import { onFocus, onBlur } from "../ui-utils/inputs";
+import { redirectTo } from "../ui-utils/routing";
+import { mapActions, mapGetters } from "vuex";
+import Comment from "../components/Comment";
 
 export default {
-  name: 'SinglePost',
+  name: "SinglePost",
   components: { Comment },
   data() {
     return {
       loading: false,
-      handle: '',
-      postid: '',
+      handle: "",
+      postid: "",
       showCommentBox: false,
-      commentsLoaded: false,
+      commentsLoaded: false
     };
   },
   created: async function() {
     this.handle = this.$route.params.handle;
     this.postid = this.$route.params.postid;
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     await this.loadAuthenticatedUser(token);
     await this.loadPostById(this.postid);
     console.log(this.post);
@@ -91,18 +85,21 @@ export default {
     if (this.post.comments && this.post.comments.length > 0) {
       this.commentsLoaded = true;
     }
+    this.showCommentBox = this.handle !== this.auth.user.handle;
   },
   computed: {
-    ...mapGetters(['auth', 'post']),
+    ...mapGetters(["auth", "post"])
   },
   methods: {
     ...mapActions([
-      'loadAuthenticatedUser',
-      'loadPostById',
-      'loadCommentsByPostId',
+      "loadAuthenticatedUser",
+      "loadPostById",
+      "loadCommentsByPostId"
     ]),
     redirectTo,
-  },
+    onFocus,
+    onBlur
+  }
 };
 </script>
 
