@@ -31,6 +31,10 @@
         </div>
       </div>
       <button class="btn primary" @click="uploadNewPost">Post</button>
+      <div class="loading-progress" v-if="loading">
+        <span>Processing Post...</span>
+        <img class="loading-img" src="../assets/images/loading.gif" alt />
+      </div>
     </section>
   </div>
 </template>
@@ -45,6 +49,7 @@ export default {
   components: {},
   data() {
     return {
+      loading: false,
       mediaFile: null,
       mediaSrc: "",
       text: ""
@@ -76,6 +81,7 @@ export default {
     },
     uploadNewPost: async function() {
       try {
+        this.loading = true;
         console.log("Create a new post, checking comment....");
         await this.createNewPost({
           token: this.auth.token,
@@ -87,6 +93,7 @@ export default {
           media: this.mediaFile,
           postid: this.post._id
         });
+        this.loading = false;
         this.redirectTo(`/${this.auth.user.handle.replace("@", "")}`);
       } catch (err) {
         console.log(err);

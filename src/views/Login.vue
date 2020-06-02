@@ -112,7 +112,7 @@ export default {
         this.redirectTo(`/${handle}`);
       } catch (err) {
         console.log(err);
-        this.errors.push(err);
+        this.errors.push("Invalid Credentials");
       }
     },
     checkForm: function() {

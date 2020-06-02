@@ -57,7 +57,16 @@
   display: block;
   margin: 0.5rem;
 }
-
+.loading-progress {
+  margin: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+.loading-img {
+  width: 30px;
+}
 @media screen and (min-width: 700px) {
   .compose-container .post-section {
     display: grid;
