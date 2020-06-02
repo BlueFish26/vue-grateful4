@@ -3,30 +3,31 @@
     <img :src="post.media" :alt="post.text" />
     <div class="post-metadata">
       <div class="likes">
-        <font-awesome-icon class="i" icon="heart" />123
+        <font-awesome-icon class="i" icon="heart" /><span v-if="post.likes">{{
+          post.likes.length
+        }}</span>
       </div>
-      <div class="comments">
+      <!-- <div class="comments">
         <font-awesome-icon class="i" icon="comment-alt" />120
-      </div>
+      </div> -->
     </div>
-    <p class="comment">{{post.text}}</p>
+    <p class="comment">{{ post.text }}</p>
     <a href="#">View comments</a>
   </div>
 </template>
 
 <script>
-import { redirectTo } from "../ui-utils/routing";
+import { redirectTo } from '../ui-utils/routing';
 export default {
-  name: "Post",
-  props: ["post", "handle"],
+  name: 'Post',
+  props: ['post', 'handle'],
   created: function() {
     console.log(this.handle);
   },
   methods: {
-    redirectTo
-  }
+    redirectTo,
+  },
 };
 </script>
 
-<style>
-</style>
+<style></style>

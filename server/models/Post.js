@@ -6,7 +6,7 @@ const PostSchema = new Schema(
     email: { type: String, required: true },
     media: { type: String },
     text: { type: String, required: true },
-    likes: [{ email: { type: String } }],
+    likes: [{ type: Schema.Types.ObjectId, ref: 'user', unique: true }],
     date: { type: Date, default: Date.now },
     handle: { type: String, required: true },
     avatar: { type: String },

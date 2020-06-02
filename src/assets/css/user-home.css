@@ -165,6 +165,7 @@
 .post-categories .category .i,
 .post-categories .category i {
   font-size: 3rem;
+  color: var(--blue);
 }
 .post-section {
   display: flex;
@@ -203,6 +204,7 @@
 .post-section .post .post-metadata i {
   font-size: 2rem;
   margin-right: 0.5rem;
+  color: var(--blue);
 }
 .post-section .post .comment {
   font-size: 1.3rem;

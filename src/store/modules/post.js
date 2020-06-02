@@ -84,6 +84,18 @@ const actions = {
       throw err;
     }
   },
+  likePost: async function({ commit }, { token, postid }) {
+    try {
+      const header = {
+        headers: { 'x-auth-token': token },
+      };
+      const response = await axios.put(`/api/posts/like/${postid}`, {}, header);
+      console.log(`/api/posts/like/${postid}`, response.data.likes);
+      commit('addLike', response.data);
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 const mutations = {
   setPost: (state, post) => {
@@ -94,6 +106,7 @@ const mutations = {
   loadPosts: (state, posts) => (state.posts = posts),
   setComments: (state, comments) => (state.post.comments = comments),
   addComment: (state, comment) => state.post.comments.unshift(comment),
+  addLike: (state, post) => (state.post.likes = post.likes),
 };
 export default {
   state,

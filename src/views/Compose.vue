@@ -1,16 +1,36 @@
 <template>
   <div class="compose-container">
+    <section class="header">
+      <div class="brand">
+        <h3>Grateful4</h3>
+      </div>
+      <div class="nav-buttons">
+        <ul>
+          <li>
+            <span
+              class="nav-button active"
+              @click="redirectTo(`/${auth.user.handle.replace('@', '')}`)"
+              >Back</span
+            >
+          </li>
+        </ul>
+      </div>
+    </section>
     <section class="post-section">
       <div class="post">
         <div class="user-info">
           <div class="avatar">
             <img :src="auth.user.avatar" alt />
           </div>
-          <div class="username">{{auth.user.handle}}</div>
+          <div class="username">{{ auth.user.handle }}</div>
           <div class="input-group-file-upload">
             <div>
               <h5>Media</h5>
-              <input type="file" class="file-upload" @change="onMediaFileChange" />
+              <input
+                type="file"
+                class="file-upload"
+                @change="onMediaFileChange"
+              />
             </div>
           </div>
         </div>
@@ -40,33 +60,33 @@
 </template>
 
 <script>
-import { onFocus, onBlur } from "../ui-utils/inputs";
-import { redirectTo } from "../ui-utils/routing";
-import { mapActions, mapGetters } from "vuex";
+import { onFocus, onBlur } from '../ui-utils/inputs';
+import { redirectTo } from '../ui-utils/routing';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: "Compose",
+  name: 'Compose',
   components: {},
   data() {
     return {
       loading: false,
       mediaFile: null,
-      mediaSrc: "",
-      text: ""
+      mediaSrc: '',
+      text: '',
     };
   },
   created: async function() {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     await this.loadAuthenticatedUser(token);
   },
   computed: {
-    ...mapGetters(["auth", "post"])
+    ...mapGetters(['auth', 'post']),
   },
   methods: {
     ...mapActions([
-      "loadAuthenticatedUser",
-      "createNewPost",
-      "uploadImageToPost"
+      'loadAuthenticatedUser',
+      'createNewPost',
+      'uploadImageToPost',
     ]),
     onFocus,
     onBlur,
@@ -74,7 +94,7 @@ export default {
     onMediaFileChange: function(event) {
       this.mediaFile = event.target.files[0];
       let reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = (e) => {
         this.mediaSrc = e.target.result;
       };
       reader.readAsDataURL(this.mediaFile);
@@ -82,27 +102,27 @@ export default {
     uploadNewPost: async function() {
       try {
         this.loading = true;
-        console.log("Create a new post, checking comment....");
+        console.log('Create a new post, checking comment....');
         await this.createNewPost({
           token: this.auth.token,
-          post: { text: this.text }
+          post: { text: this.text },
         });
-        console.log("Uploading image...");
+        console.log('Uploading image...');
         await this.uploadImageToPost({
           token: this.auth.token,
           media: this.mediaFile,
-          postid: this.post._id
+          postid: this.post._id,
         });
         this.loading = false;
-        this.redirectTo(`/${this.auth.user.handle.replace("@", "")}`);
+        this.redirectTo(`/${this.auth.user.handle.replace('@', '')}`);
       } catch (err) {
         console.log(err);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-@import "../assets/css/single-post.css";
+@import '../assets/css/single-post.css';
 </style>

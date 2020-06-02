@@ -211,4 +211,25 @@ router.get('/comments/:post_id', async (req, res) => {
   }
 });
 
+/*
+Route  - PUT /api/posts/like/:id
+Desc   - Add a like to a Post
+*/
+router.put('/like/:id', [auth], async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    const post = await Post.findById(req.params.id).select('-comments');
+    if (post.likes.includes(user._id)) {
+      return res.status(400).json('Current user already liked this post');
+    } else {
+      post.likes.push(user._id);
+      await post.save();
+      return res.json(post);
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err.message);
+  }
+});
+
 module.exports = router;

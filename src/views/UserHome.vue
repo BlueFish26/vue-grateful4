@@ -31,42 +31,54 @@
         </ul>
       </div>
     </section>
-    <section class="profile">
+    <div class="loading-progress" v-if="loading">
+      <span>Loading...</span>
+      <img class="loading-img" src="../assets/images/loading.gif" alt />
+    </div>
+    <section class="profile" v-if="!loading">
       <div class="avatar">
-        <img :src="auth.user.avatar" alt />
+        <img :src="requestedUser.avatar" alt />
       </div>
       <div class="follow-button">
         <div class="name">
-          <span class="fullname">{{ auth.user.name }}</span>
-          <span class="handle">{{ auth.user.handle }}</span>
+          <span class="fullname">{{ requestedUser.name }}</span>
+          <span class="handle">{{ requestedUser.handle }}</span>
         </div>
-        <button v-if="auth.isAuthenticated">Follow</button>
+        <input
+          class="btn primary"
+          v-if="
+            auth.isAuthenticated &&
+              auth.user.handle.replace('@', '').toLowerCase() !==
+                requestedUser.handle.replace('@', '').toLowerCase()
+          "
+          value="Follow"
+        />
       </div>
       <div class="user-numbers">
         <div>
-          <span class="number">{{
-            auth.user.numbers ? auth.user.numbers.friends : 0
-          }}</span>
+          <span class="number">
+            {{ requestedUser.numbers ? requestedUser.numbers.friends : 0 }}
+          </span>
           <span>friends</span>
         </div>
         <div>
-          <span class="number">{{
-            auth.user.numbers ? auth.user.numbers.followers : 0
-          }}</span>
+          <span class="number">
+            {{ requestedUser.numbers ? requestedUser.numbers.followers : 0 }}
+          </span>
           <span>followers</span>
         </div>
         <div>
-          <span class="number">{{
-            auth.user.numbers ? auth.user.numbers.following : 0
-          }}</span>
+          <span class="number">
+            {{ requestedUser.numbers ? requestedUser.numbers.following : 0 }}
+          </span>
           <span>following</span>
         </div>
       </div>
       <div class="user-notes">
-        <div class="message">{{ auth.user.motto }}</div>
+        <div class="message">{{ requestedUser.motto }}</div>
       </div>
     </section>
-    <section class="post-categories">
+    <section class="post-categories" v-if="!loading">
       <div class="category">
         <font-awesome-icon class="i" icon="file-video" />
       </div>
@@ -77,7 +89,7 @@
         <font-awesome-icon class="i" icon="heart" />
       </div>
     </section>
-    <section class="post-section">
+    <section class="post-section" v-if="!loading">
       <Post
         v-for="post in posts"
         :key="post._id"
@@ -96,27 +108,6 @@ import Post from '../components/Post';
 export default {
   name: 'UserHome',
   components: { Post },
-  created: async function() {
-    console.log('UserHome - Created');
-    this.handle = this.$route.params.handle;
-    let handle = this.handle;
-    console.log('handle', handle);
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.auth.isAuthenticated = true;
-      await this.loadAuthenticatedUser(token);
-      this.authenticatedUser = this.auth.user;
-    }
-    if (token && this.auth.user) {
-      if (this.auth.user.handle == handle) {
-        await this.loadPostsForUser({ token, handle });
-      } else {
-        await this.loadRequestedUser(handle);
-        this.requestedUser = this.auth.user;
-      }
-    }
-    await this.loadPostsForUser({ token, handle });
-  },
   data() {
     return {
       handle: '',
@@ -124,6 +115,35 @@ export default {
       requestedUser: {},
       loading: false,
     };
+  },
+  created: async function() {
+    console.log('UserHome - Created');
+    this.loading = true;
+    this.handle = this.$route.params.handle;
+    let handle = this.handle;
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.auth.isAuthenticated = true;
+      await this.loadAuthenticatedUser(token);
+    }
+    if (token && this.auth.user) {
+      if (this.auth.user.handle !== handle) {
+        const user = await this.loadRequestedUser(handle);
+        this.requestedUser = user;
+        console.log(this.requestedUser);
+      }
+    }
+    console.log(
+      'handle',
+      this.requestedUser.handle.replace('@', '').toLowerCase()
+    );
+    console.log(
+      'auth.user.handle',
+      this.auth.user.handle.replace('@', '').toLowerCase()
+    );
+    await this.loadPostsForUser({ token, handle });
+    this.loading = false;
   },
   computed: {
     ...mapGetters(['auth', 'posts']),
@@ -149,4 +169,8 @@ export default {
 
 <style scoped>
 @import '../assets/css/user-home.css';
+.btn.primary {
+  width: 20%;
+  text-align: center;
+}
 </style>

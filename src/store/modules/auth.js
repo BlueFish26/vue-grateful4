@@ -62,8 +62,9 @@ const actions = {
   loadRequestedUser: async function({ commit }, handle) {
     try {
       const response = await axios.get(`/api/users/@${handle}`);
-      console.log(`/api/users/@${handle}`, response);
-      commit('setUser', response.data);
+      console.log(`/api/users/@${handle}`, response.data);
+      //commit('setUser', response.data);
+      return response.data;
     } catch (err) {
       throw err;
     }
