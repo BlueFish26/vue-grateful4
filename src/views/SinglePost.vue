@@ -46,10 +46,16 @@
       <div class="input-group">
         <div>
           <h5>Comment</h5>
-          <input type="text" class="input" />
+          <input
+            type="text"
+            class="input"
+            v-model="text"
+            @focus="onFocus"
+            @blur="onBlur"
+          />
         </div>
       </div>
-      <button class="btn primary">Comment</button>
+      <button class="btn primary" @click="insertComment">Comment</button>
     </section>
     <section class="comments-section" v-if="commentsLoaded">
       <Comment
@@ -77,6 +83,7 @@ export default {
       postid: '',
       showCommentBox: false,
       commentsLoaded: false,
+      text: '',
     };
   },
   created: async function() {
@@ -91,6 +98,10 @@ export default {
     if (this.post.comments && this.post.comments.length > 0) {
       this.commentsLoaded = true;
     }
+    this.showCommentBox = false;
+    if (this.handle !== this.auth.user.handle) {
+      this.showCommentBox = true;
+    }
   },
   computed: {
     ...mapGetters(['auth', 'post']),
@@ -100,8 +111,20 @@ export default {
       'loadAuthenticatedUser',
       'loadPostById',
       'loadCommentsByPostId',
+      'addCommentToPost',
     ]),
     redirectTo,
+    onFocus,
+    onBlur,
+    insertComment: async function() {
+      const token = localStorage.getItem('token');
+      await this.addCommentToPost({
+        token: token,
+        postid: this.post._id,
+        text: this.text,
+      });
+      console.log(this.post.comments);
+    },
   },
 };
 </script>

@@ -66,6 +66,24 @@ const actions = {
       throw err;
     }
   },
+  addCommentToPost: async function({ commit }, { token, postid, text }) {
+    try {
+      const header = {
+        headers: { 'x-auth-token': token },
+      };
+      const data = {
+        text: text,
+      };
+      const response = await axios.post(
+        `/api/posts/comment/${postid}`,
+        data,
+        header
+      );
+      commit('addComment', response.data);
+    } catch (err) {
+      throw err;
+    }
+  },
 };
 const mutations = {
   setPost: (state, post) => {
@@ -75,6 +93,7 @@ const mutations = {
   updatePost: (state, media) => (state.post.media = media),
   loadPosts: (state, posts) => (state.posts = posts),
   setComments: (state, comments) => (state.post.comments = comments),
+  addComment: (state, comment) => state.post.comments.unshift(comment),
 };
 export default {
   state,
