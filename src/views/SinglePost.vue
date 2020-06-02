@@ -43,11 +43,20 @@
       </div>
       <div class="input-group">
         <div>
-          <h5>Comment</h5>
+          <h5>Comment</h5><<<<<<< HEAD
           <input type="text" class="input" @focus="onFocus" @blur="onBlur" />
+          =======
+          <input
+            type="text"
+            class="input"
+            v-model="text"
+            @focus="onFocus"
+            @blur="onBlur"
+          />
+          >>>>>>> 4f220dc8343e0ee5a5ddb424eff71b5791051a8f
         </div>
       </div>
-      <button class="btn primary">Comment</button>
+      <button class="btn primary" @click="insertComment">Comment</button>
     </section>
     <section class="comments-section" v-if="commentsLoaded">
       <Comment v-for="comment in post.comments" v-bind:comment="comment" :key="comment._id" />
@@ -70,7 +79,8 @@ export default {
       handle: "",
       postid: "",
       showCommentBox: false,
-      commentsLoaded: false
+      commentsLoaded: false,
+      text: ""
     };
   },
   created: async function() {
@@ -94,11 +104,21 @@ export default {
     ...mapActions([
       "loadAuthenticatedUser",
       "loadPostById",
-      "loadCommentsByPostId"
+      "loadCommentsByPostId",
+      "addCommentToPost"
     ]),
     redirectTo,
     onFocus,
-    onBlur
+    onBlur,
+    insertComment: async function() {
+      const token = localStorage.getItem("token");
+      await this.addCommentToPost({
+        token: token,
+        postid: this.post._id,
+        text: this.text
+      });
+      console.log(this.post.comments);
+    }
   }
 };
 </script>
