@@ -69,6 +69,8 @@ router.post(
       app_name,
       email,
       text,
+      handle: user.handle,
+      avatar: user.avatar,
     });
     newPost.save((err) => {
       if (err) {

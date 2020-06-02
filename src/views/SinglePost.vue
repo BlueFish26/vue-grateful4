@@ -12,12 +12,11 @@
         </ul>
       </div>
     </section>
-
     <section class="post-section">
       <div class="post">
         <div class="user-info">
           <div class="avatar">
-            <img :src="auth.user.avatar" alt />
+            <img :src="post.avatar" alt />
           </div>
           <div class="username">@{{ handle }}</div>
         </div>
@@ -43,23 +42,14 @@
       </div>
       <div class="input-group">
         <div>
-          <h5>Comment</h5><<<<<<< HEAD
-          <input type="text" class="input" @focus="onFocus" @blur="onBlur" />
-          =======
-          <input
-            type="text"
-            class="input"
-            v-model="text"
-            @focus="onFocus"
-            @blur="onBlur"
-          />
-          >>>>>>> 4f220dc8343e0ee5a5ddb424eff71b5791051a8f
+          <h5>Comment</h5>
+          <input type="text" class="input" v-model="text" @focus="onFocus" @blur="onBlur" />
         </div>
       </div>
       <button class="btn primary" @click="insertComment">Comment</button>
     </section>
     <section class="comments-section" v-if="commentsLoaded">
-      <Comment v-for="comment in post.comments" v-bind:comment="comment" :key="comment._id" />
+      <Comment v-for="comment in comments" v-bind:comment="comment" :key="comment._id" />
     </section>
   </div>
 </template>
@@ -80,7 +70,8 @@ export default {
       postid: "",
       showCommentBox: false,
       commentsLoaded: false,
-      text: ""
+      text: "",
+      comments: []
     };
   },
   created: async function() {
@@ -89,13 +80,15 @@ export default {
     const token = localStorage.getItem("token");
     await this.loadAuthenticatedUser(token);
     await this.loadPostById(this.postid);
-    console.log(this.post);
     await this.loadCommentsByPostId(this.postid);
-    console.log(this.post);
+    this.comments = this.post.comments;
     if (this.post.comments && this.post.comments.length > 0) {
       this.commentsLoaded = true;
     }
-    this.showCommentBox = this.handle !== this.auth.user.handle;
+    console.log(this.handle, this.auth.user.handle);
+
+    this.showCommentBox =
+      `@${this.handle}`.toLowerCase() !== this.auth.user.handle.toLowerCase();
   },
   computed: {
     ...mapGetters(["auth", "post"])
@@ -117,7 +110,8 @@ export default {
         postid: this.post._id,
         text: this.text
       });
-      console.log(this.post.comments);
+      this.comments = this.post.comments;
+      this.text = "";
     }
   }
 };

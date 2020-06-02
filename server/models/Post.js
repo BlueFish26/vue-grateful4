@@ -8,6 +8,8 @@ const PostSchema = new Schema(
     text: { type: String, required: true },
     likes: [{ email: { type: String } }],
     date: { type: Date, default: Date.now },
+    handle: { type: String, required: true },
+    avatar: { type: String },
     comments: [
       {
         user: { type: Schema.Types.ObjectId, ref: 'user' },
