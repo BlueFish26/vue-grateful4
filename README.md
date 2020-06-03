@@ -1,8 +1,11 @@
 # Grateful4
 
 Project: Grateful4
+
 Version: 0.0.1
+
 Author: Norman T. Elayba
+
 Description: "Instagram" like app for things one is thankful for.
 
 This project is an exploration of Vue JS.
