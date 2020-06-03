@@ -219,11 +219,13 @@ router.put('/like/:id', [auth], async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     const post = await Post.findById(req.params.id).select('-comments');
-    if (post.likes.includes(user._id)) {
+    if (post.likes.includes(user._id) && user.likedPosts.includes(post._id)) {
       return res.status(400).json('Current user already liked this post');
     } else {
       post.likes.push(user._id);
+      user.likedPosts.push(post._id);
       await post.save();
+      await user.save();
       return res.json(post);
     }
   } catch (err) {

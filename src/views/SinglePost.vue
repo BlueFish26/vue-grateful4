@@ -45,7 +45,7 @@
       </div>
       <div class="input-group">
         <div>
-          <h5>Comment</h5>
+          <h5>Say something nice</h5>
           <input
             type="text"
             class="input"

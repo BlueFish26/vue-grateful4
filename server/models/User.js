@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const Schema = mongoose.Schema;
 const UserSchema = new mongoose.Schema(
   {
     app_name: { type: String, required: true },
@@ -15,6 +15,7 @@ const UserSchema = new mongoose.Schema(
       followers: { type: Number },
       follwing: { type: Number },
     },
+    likedPosts: [{ type: Schema.Types.ObjectId, ref: 'post', unique: true }],
   },
   {
     collation: { locale: 'en', strength: 2 },

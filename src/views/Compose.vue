@@ -40,7 +40,7 @@
     <section class="add-comment">
       <div class="input-group textarea-group">
         <div>
-          <h5>Comment</h5>
+          <h5>Say thankful words</h5>
           <textarea
             class="textarea"
             v-model="text"
@@ -50,6 +50,15 @@
           />
         </div>
       </div>
+      <div class="sentiment-result">
+        <span>{{ error }} </span>
+        <font-awesome-icon
+          :icon="icon"
+          v-if="icon"
+          style="color: green; font-size: 5rem;"
+        />
+      </div>
+
       <button class="btn primary" @click="uploadNewPost">Post</button>
       <div class="loading-progress" v-if="loading">
         <span>Processing Post...</span>
@@ -73,6 +82,8 @@ export default {
       mediaFile: null,
       mediaSrc: '',
       text: '',
+      icon: '',
+      error: '',
     };
   },
   created: async function() {
@@ -101,6 +112,19 @@ export default {
     },
     uploadNewPost: async function() {
       try {
+        const sentiment = this.$tsSentiment.predict(this.text);
+        let icon = 'sad-tear';
+        this.error = '';
+        if (sentiment.score >= 0.0) icon = 'sad-tear';
+        if (sentiment.score > 0.2) icon = 'frown-open';
+        if (sentiment.score > 0.4) icon = 'grimace';
+        if (sentiment.score > 0.6) icon = 'meh-rolling-eyes';
+        if (sentiment.score > 0.8) icon = 'smile-beam';
+        this.icon = icon;
+        if (sentiment.score < 0.8) {
+          this.error = 'Please say something positive';
+          return;
+        }
         this.loading = true;
         console.log('Create a new post, checking comment....');
         await this.createNewPost({
@@ -125,4 +149,15 @@ export default {
 
 <style scoped>
 @import '../assets/css/single-post.css';
+.sentiment-result {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
+.sentiment-result span {
+  font-size: 1.5rem;
+  margin-right: 1rem;
+}
 </style>
