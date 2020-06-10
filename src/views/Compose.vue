@@ -151,7 +151,7 @@ export default {
 @import '../assets/css/single-post.css';
 .sentiment-result {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   margin: 0.5rem;
   padding: 0.5rem;

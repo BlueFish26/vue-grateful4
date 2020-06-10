@@ -48,6 +48,10 @@
           value="Signup"
           v-on:click="redirectTo('/signup')"
         />
+        <div class="loading-progress" v-if="loading">
+          <span>Validating Credential....</span>
+          <img class="loading-img" src="../assets/images/loading.gif" alt />
+        </div>
         <div class="error" v-if="errors.length">
           <ul>
             <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
@@ -59,36 +63,37 @@
 </template>
 
 <script>
-import { onFocus, onBlur } from "../ui-utils/inputs";
-import { redirectTo } from "../ui-utils/routing";
-import { validEmail } from "../ui-utils/validate";
-import { mapActions, mapGetters } from "vuex";
+import { onFocus, onBlur } from '../ui-utils/inputs';
+import { redirectTo } from '../ui-utils/routing';
+import { validEmail } from '../ui-utils/validate';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: "Login",
+  name: 'Login',
   components: {},
+  data() {
+    return {
+      loading: false,
+      isFormValid: false,
+      errors: [],
+      email: '',
+      password: '',
+    };
+  },
   created: async function() {
-    console.log("Created");
-    const token = localStorage.getItem("token");
+    console.log('Created');
+    const token = localStorage.getItem('token');
     if (!this.auth.isAuthenticated && !!token) {
       await this.loadAuthenticatedUser(token);
-      let handle = this.auth.user.handle.replace("@", "");
+      let handle = this.auth.user.handle.replace('@', '');
       this.redirectTo(`/${handle}`);
     }
   },
-  data() {
-    return {
-      isFormValid: false,
-      errors: [],
-      email: "",
-      password: ""
-    };
-  },
   computed: {
-    ...mapGetters(["auth"])
+    ...mapGetters(['auth']),
   },
   methods: {
-    ...mapActions(["authenticateUser", "loadAuthenticatedUser"]),
+    ...mapActions(['authenticateUser', 'loadAuthenticatedUser']),
     onFocus,
     onBlur,
     redirectTo,
@@ -100,19 +105,22 @@ export default {
         return;
       }
       try {
+        this.loading = true;
         await this.authenticateUser({
           email: this.email,
-          password: this.password
+          password: this.password,
         });
         let token = this.auth.token;
         console.log(token);
         await this.loadAuthenticatedUser(token);
         console.log(this.auth);
-        let handle = this.auth.user.handle.replace("@", "");
+        let handle = this.auth.user.handle.replace('@', '');
         this.redirectTo(`/${handle}`);
+        this.loading = false;
       } catch (err) {
+        this.loading = false;
         console.log(err);
-        this.errors.push("Invalid Credentials");
+        this.errors.push('Invalid Credentials');
       }
     },
     checkForm: function() {
@@ -120,17 +128,17 @@ export default {
       let isEmailValid = this.validEmail(this.email);
       let isPasswordValid = !!this.password;
       if (!isEmailValid) {
-        this.errors.push("Please enter valid Email");
+        this.errors.push('Please enter valid Email');
       }
       if (!isPasswordValid) {
-        this.errors.push("Please enter Password");
+        this.errors.push('Please enter Password');
       }
       this.isFormValid = isEmailValid && isPasswordValid;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-@import "../assets/css/index.css";
+@import '../assets/css/index.css';
 </style>
